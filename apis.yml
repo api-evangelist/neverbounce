@@ -55,6 +55,8 @@ apis:
         url: https://github.com/NeverBounce
 
 common:
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/neverbounce
   - type: Website
     url: https://www.neverbounce.com
   - type: Documentation
