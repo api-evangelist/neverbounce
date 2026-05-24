@@ -68,6 +68,8 @@ common:
   - type: SignUp
     url: https://app.neverbounce.com/register
 
+  - type: LLMsTxt
+    url: https://developers.neverbounce.com/llms.txt
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
