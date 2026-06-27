@@ -65,10 +65,10 @@ common:
     url: https://github.com/NeverBounce
   - type: Pricing
     url: https://www.neverbounce.com/pricing
-  - type: SignUp
+  - type: Signup
     url: https://app.neverbounce.com/register
 
-  - type: LLMsTxt
+  - type: LlmsText
     url: https://developers.neverbounce.com/llms.txt
 maintainers:
   - FN: Kin Lane
