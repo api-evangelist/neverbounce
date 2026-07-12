@@ -1,0 +1,21 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/neverbounce-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - query
+schemes:
+- name: ApiKeyQuery
+  type: apiKey
+  in: query
+  parameter: key
+  sources:
+  - openapi/neverbounce-openapi.yml
+- name: BearerAuth
+  type: http
+  scheme: bearer
+  sources:
+  - openapi/neverbounce-openapi.yml

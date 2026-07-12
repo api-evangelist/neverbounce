@@ -55,6 +55,10 @@ apis:
         url: https://github.com/NeverBounce
 
 common:
+  - type: DomainSecurity
+    url: security/neverbounce-domain-security.yml
+  - type: Authentication
+    url: authentication/neverbounce-authentication.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/neverbounce
   - type: Website
