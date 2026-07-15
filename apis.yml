@@ -55,6 +55,8 @@ apis:
         url: https://github.com/NeverBounce
 
 common:
+  - type: AgenticAccess
+    url: agentic-access/neverbounce-agentic-access.yml
   - type: DomainSecurity
     url: security/neverbounce-domain-security.yml
   - type: Authentication
