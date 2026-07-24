@@ -1,0 +1,78 @@
+openapi: 3.1.0
+info:
+  title: NeverBounce API v4 Account API
+  version: '4'
+  description: 'RESTful JSON API for email verification. Provides single email verification and bulk list (jobs) verification endpoints. Authentication uses a per-integration API key (format `secret_xxxx...`) supplied via the `key` query/body parameter or the `Authorization: Bearer` header.'
+  contact:
+    name: NeverBounce Developers
+    url: https://developers.neverbounce.com/
+servers:
+- url: https://api.neverbounce.com/v4
+  description: NeverBounce v4 production API
+security:
+- ApiKeyQuery: []
+- BearerAuth: []
+tags:
+- name: Account
+  description: Account information
+paths:
+  /account/info:
+    get:
+      tags:
+      - Account
+      summary: Get account information and remaining credits
+      parameters:
+      - name: key
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Account info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountInfoResponse'
+components:
+  schemas:
+    AccountInfoResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        credits_info:
+          type: object
+          properties:
+            paid_credits_used:
+              type: integer
+            free_credits_used:
+              type: integer
+            paid_credits_remaining:
+              type: integer
+            free_credits_remaining:
+              type: integer
+        job_counts:
+          type: object
+          properties:
+            completed:
+              type: integer
+            under_review:
+              type: integer
+            queued:
+              type: integer
+            processing:
+              type: integer
+        execution_time:
+          type: integer
+  securitySchemes:
+    ApiKeyQuery:
+      type: apiKey
+      in: query
+      name: key
+    BearerAuth:
+      type: http
+      scheme: bearer
+externalDocs:
+  description: NeverBounce API getting started
+  url: https://developers.neverbounce.com/docs/api-getting-started

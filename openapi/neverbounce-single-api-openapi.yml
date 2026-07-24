@@ -1,0 +1,103 @@
+openapi: 3.1.0
+info:
+  title: NeverBounce API v4 Account Single API
+  version: '4'
+  description: 'RESTful JSON API for email verification. Provides single email verification and bulk list (jobs) verification endpoints. Authentication uses a per-integration API key (format `secret_xxxx...`) supplied via the `key` query/body parameter or the `Authorization: Bearer` header.'
+  contact:
+    name: NeverBounce Developers
+    url: https://developers.neverbounce.com/
+servers:
+- url: https://api.neverbounce.com/v4
+  description: NeverBounce v4 production API
+security:
+- ApiKeyQuery: []
+- BearerAuth: []
+tags:
+- name: Single
+  description: Single-email verification
+paths:
+  /single/check:
+    post:
+      tags:
+      - Single
+      summary: Verify a single email address
+      description: Submits a single email address for real-time verification. Returns a result classification (valid, invalid, disposable, catchall, unknown) along with flags and an optional suggested correction.
+      parameters:
+      - name: key
+        in: query
+        description: API key (may also be supplied via Authorization header)
+        required: false
+        schema:
+          type: string
+      - name: email
+        in: query
+        description: Email address to verify
+        required: true
+        schema:
+          type: string
+          format: email
+      - name: address_info
+        in: query
+        required: false
+        schema:
+          type: integer
+          enum:
+          - 0
+          - 1
+      - name: credits_info
+        in: query
+        required: false
+        schema:
+          type: integer
+          enum:
+          - 0
+          - 1
+      - name: timeout
+        in: query
+        required: false
+        schema:
+          type: integer
+          description: Per-request timeout in seconds
+      responses:
+        '200':
+          description: Verification response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SingleCheckResponse'
+components:
+  schemas:
+    SingleCheckResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          examples:
+          - success
+        result:
+          type: string
+          enum:
+          - valid
+          - invalid
+          - disposable
+          - catchall
+          - unknown
+        flags:
+          type: array
+          items:
+            type: string
+        suggested_correction:
+          type: string
+        execution_time:
+          type: integer
+  securitySchemes:
+    ApiKeyQuery:
+      type: apiKey
+      in: query
+      name: key
+    BearerAuth:
+      type: http
+      scheme: bearer
+externalDocs:
+  description: NeverBounce API getting started
+  url: https://developers.neverbounce.com/docs/api-getting-started
