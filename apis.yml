@@ -12,7 +12,19 @@ description: >-
   uses a per-integration API key (format `secret_xxxx...`) passed as the
   `key` parameter or in the Authorization header.
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/neverbounce.png
 tags:
   - Email Verification
   - Email Validation
@@ -27,33 +39,60 @@ created: '2026-05-11'
 modified: '2026-05-11'
 specificationVersion: '0.19'
 apis:
-  - aid: neverbounce:v4-api
-    name: NeverBounce API v4
-    description: >-
-      RESTful JSON API for email verification. Provides single email
-      verification (`/single/check`), bulk job verification (`/jobs/create`,
-      `/jobs/parse`, `/jobs/start`, `/jobs/status`, `/jobs/results`,
-      `/jobs/download`), account info, and POE (Proof of Engagement)
-      endpoints. Authentication uses a per-integration API key
-      (`secret_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`) passed via the `key`
-      query/body parameter or `Authorization: Bearer` header.
-    humanURL: https://developers.neverbounce.com/docs/api-getting-started
-    baseURL: https://api.neverbounce.com/v4
-    tags:
-      - Email Verification
-      - REST
-      - JSON
-      - Deliverability
-    properties:
-      - type: Documentation
-        url: https://developers.neverbounce.com/docs/api-getting-started
-      - type: Verifying an Email
-        url: https://developers.neverbounce.com/docs/verifying-an-email
-      - type: Verifying a List
-        url: https://developers.neverbounce.com/docs/verifying-a-list
-      - type: GitHub SDKs
-        url: https://github.com/NeverBounce
-
+- aid: neverbounce:v4-api
+  name: NeverBounce API v4
+  description: >-
+    RESTful JSON API for email verification. Provides single email verification (`/single/check`), bulk
+    job verification (`/jobs/create`, `/jobs/parse`, `/jobs/start`, `/jobs/status`, `/jobs/results`, `/jobs/download`),
+    account info, and POE (Proof of Engagement) endpoints. Authentication uses a per-integration API key
+    (`secret_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`) passed via the `key` query/body parameter or `Authorization:
+    Bearer` header.
+  humanURL: https://developers.neverbounce.com/docs/api-getting-started
+  baseURL: https://api.neverbounce.com/v4
+  tags:
+  - Email Verification
+  - REST
+  - JSON
+  - Deliverability
+  properties:
+  - type: Documentation
+    url: https://developers.neverbounce.com/docs/api-getting-started
+  - type: Verifying an Email
+    url: https://developers.neverbounce.com/docs/verifying-an-email
+  - type: Verifying a List
+    url: https://developers.neverbounce.com/docs/verifying-a-list
+  - type: GitHub SDKs
+    url: https://github.com/NeverBounce
+- aid: neverbounce:neverbounce-account-api
+  name: NeverBounce Account API
+  description: Account information
+  humanURL: https://developers.neverbounce.com/docs/api-getting-started
+  baseURL: https://api.neverbounce.com/v4
+  tags:
+  - Account
+  properties:
+  - type: OpenAPI
+    url: openapi/neverbounce-account-api-openapi.yml
+- aid: neverbounce:neverbounce-jobs-api
+  name: NeverBounce Jobs API
+  description: Bulk list verification jobs
+  humanURL: https://developers.neverbounce.com/docs/api-getting-started
+  baseURL: https://api.neverbounce.com/v4
+  tags:
+  - Jobs
+  properties:
+  - type: OpenAPI
+    url: openapi/neverbounce-jobs-api-openapi.yml
+- aid: neverbounce:neverbounce-single-api
+  name: NeverBounce Single API
+  description: Single-email verification
+  humanURL: https://developers.neverbounce.com/docs/api-getting-started
+  baseURL: https://api.neverbounce.com/v4
+  tags:
+  - Single
+  properties:
+  - type: OpenAPI
+    url: openapi/neverbounce-single-api-openapi.yml
 common:
   - type: AgenticAccess
     url: agentic-access/neverbounce-agentic-access.yml
