@@ -1,0 +1,18 @@
+{
+  "provider": "neverbounce",
+  "sources": [
+    "neverbounce-account-api-openapi.yml",
+    "neverbounce-jobs-api-openapi.yml",
+    "neverbounce-single-api-openapi.yml"
+  ],
+  "outputs": [
+    "neverbounce-account-api-openapi.yml",
+    "neverbounce-jobs-api-openapi.yml",
+    "neverbounce-single-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

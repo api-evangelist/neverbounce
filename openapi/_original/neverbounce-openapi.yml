@@ -1,0 +1,384 @@
+openapi: 3.1.0
+info:
+  title: NeverBounce API v4
+  version: "4"
+  description: >-
+    RESTful JSON API for email verification. Provides single email verification
+    and bulk list (jobs) verification endpoints. Authentication uses a
+    per-integration API key (format `secret_xxxx...`) supplied via the `key`
+    query/body parameter or the `Authorization: Bearer` header.
+  contact:
+    name: NeverBounce Developers
+    url: https://developers.neverbounce.com/
+servers:
+  - url: https://api.neverbounce.com/v4
+    description: NeverBounce v4 production API
+security:
+  - ApiKeyQuery: []
+  - BearerAuth: []
+tags:
+  - name: Single
+    description: Single-email verification
+  - name: Jobs
+    description: Bulk list verification jobs
+  - name: Account
+    description: Account information
+paths:
+  /single/check:
+    post:
+      tags: [Single]
+      summary: Verify a single email address
+      description: >-
+        Submits a single email address for real-time verification. Returns a
+        result classification (valid, invalid, disposable, catchall, unknown)
+        along with flags and an optional suggested correction.
+      parameters:
+        - name: key
+          in: query
+          description: API key (may also be supplied via Authorization header)
+          required: false
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: Email address to verify
+          required: true
+          schema:
+            type: string
+            format: email
+        - name: address_info
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+        - name: credits_info
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+        - name: timeout
+          in: query
+          required: false
+          schema:
+            type: integer
+            description: Per-request timeout in seconds
+      responses:
+        "200":
+          description: Verification response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SingleCheckResponse"
+  /jobs/create:
+    post:
+      tags: [Jobs]
+      summary: Create a verification job
+      description: >-
+        Creates a bulk verification job from either a remote URL containing a
+        CSV/list of emails or from inline supplied data.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobCreateRequest"
+      responses:
+        "200":
+          description: Job created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobCreateResponse"
+  /jobs/parse:
+    post:
+      tags: [Jobs]
+      summary: Parse a previously uploaded job
+      description: Begins parsing of an uploaded list to prepare it for verification.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [job_id]
+              properties:
+                key:
+                  type: string
+                job_id:
+                  type: integer
+                auto_start:
+                  type: boolean
+      responses:
+        "200":
+          description: Parse acknowledgement
+  /jobs/start:
+    post:
+      tags: [Jobs]
+      summary: Start verification of a parsed job
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [job_id]
+              properties:
+                key:
+                  type: string
+                job_id:
+                  type: integer
+                run_sample:
+                  type: boolean
+      responses:
+        "200":
+          description: Start acknowledgement
+  /jobs/status:
+    get:
+      tags: [Jobs]
+      summary: Get job status
+      parameters:
+        - name: key
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: job_id
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Job status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JobStatusResponse"
+  /jobs/results:
+    get:
+      tags: [Jobs]
+      summary: Get paginated job results
+      parameters:
+        - name: key
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: job_id
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: items_per_page
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Paginated job results
+  /jobs/download:
+    get:
+      tags: [Jobs]
+      summary: Download completed job results as CSV
+      parameters:
+        - name: key
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: job_id
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: valids
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+        - name: invalids
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+        - name: disposables
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+        - name: catchalls
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+        - name: unknowns
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [0, 1]
+      responses:
+        "200":
+          description: CSV download
+          content:
+            text/csv: {}
+  /account/info:
+    get:
+      tags: [Account]
+      summary: Get account information and remaining credits
+      parameters:
+        - name: key
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Account info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountInfoResponse"
+components:
+  securitySchemes:
+    ApiKeyQuery:
+      type: apiKey
+      in: query
+      name: key
+    BearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    SingleCheckResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          examples: [success]
+        result:
+          type: string
+          enum: [valid, invalid, disposable, catchall, unknown]
+        flags:
+          type: array
+          items:
+            type: string
+        suggested_correction:
+          type: string
+        execution_time:
+          type: integer
+    JobCreateRequest:
+      type: object
+      required: [input, input_location]
+      properties:
+        key:
+          type: string
+        input:
+          description: Either a remote URL or an inline list of email rows
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: array
+                items:
+                  type: string
+        input_location:
+          type: string
+          enum: [remote_url, supplied]
+        filename:
+          type: string
+        auto_parse:
+          type: boolean
+        auto_start:
+          type: boolean
+        run_sample:
+          type: boolean
+        allow_manual_review:
+          type: boolean
+        request_meta_data:
+          type: object
+          properties:
+            leverage_historical_data:
+              type: integer
+              enum: [0, 1]
+    JobCreateResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        job_id:
+          type: integer
+        execution_time:
+          type: integer
+    JobStatusResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        id:
+          type: integer
+        job_status:
+          type: string
+          enum:
+            - under_review
+            - queued
+            - failed
+            - complete
+            - running
+            - parsing
+            - waiting
+            - waiting_analyzed
+            - uploading
+        total:
+          type: object
+          additionalProperties: true
+        bounce_estimate:
+          type: number
+        percent_complete:
+          type: number
+        created_at:
+          type: string
+          format: date-time
+    AccountInfoResponse:
+      type: object
+      properties:
+        status:
+          type: string
+        credits_info:
+          type: object
+          properties:
+            paid_credits_used:
+              type: integer
+            free_credits_used:
+              type: integer
+            paid_credits_remaining:
+              type: integer
+            free_credits_remaining:
+              type: integer
+        job_counts:
+          type: object
+          properties:
+            completed:
+              type: integer
+            under_review:
+              type: integer
+            queued:
+              type: integer
+            processing:
+              type: integer
+        execution_time:
+          type: integer
+externalDocs:
+  description: NeverBounce API getting started
+  url: https://developers.neverbounce.com/docs/api-getting-started
