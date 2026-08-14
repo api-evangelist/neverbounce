@@ -1,29 +1,34 @@
 aid: neverbounce
 name: NeverBounce
 description: >-
-  NeverBounce is an email verification and list cleaning service (now part of
-  ZeroBounce) that validates individual email addresses in real time and
-  cleans bulk lists by checking syntax, mailbox existence, role addresses,
-  disposable addresses, catch-all domains, and deliverability to reduce bounce
-  rates for marketing, sales, and transactional senders. The NeverBounce v4
-  REST API at https://api.neverbounce.com/v4/ provides endpoints for single
-  email checks, list jobs (create, parse, start, status, results, download),
-  account info, and webhooks, with JSON responses over HTTPS. Authentication
-  uses a per-integration API key (format `secret_xxxx...`) passed as the
-  `key` parameter or in the Authorization header.
+  NeverBounce is an email verification and list cleaning service — a ZoomInfo company —
+  that validates individual email addresses in real time and cleans bulk lists by checking
+  syntax, mailbox existence, role addresses, disposable addresses, catch-all domains, and
+  deliverability to reduce bounce rates for marketing, sales, and transactional senders.
+  The NeverBounce v4 REST API at https://api.neverbounce.com/v4.2/ provides ten published
+  operations covering single email checks (/single/check), bulk list jobs (create, parse,
+  start, status, results, search, delete, download), account credit info, and the
+  Proof-of-Engagement confirmation used by the browser widget, with JSON responses over
+  HTTPS. Authentication uses a per-integration API key (format `secret_xxxx...`) passed as
+  the `key` parameter in the query string or request body; `public_` keys drive the
+  JavaScript widget and cannot call the standard API. Application errors — including
+  authentication failure and throttling — are returned with an HTTP 200 and a `status`
+  field rather than a 4xx, which is the defining runtime quirk of this API.
 type: Index
 accessModel:
-  pricing: unknown
+  pricing: paid
   onboarding: self-serve
-  trial: false
+  trial: true
   try_now: false
-  public: false
-  label: Self-serve signup
-  confidence: medium
+  public: true
+  label: Self-serve signup with published per-credit pricing
+  confidence: high
   source:
   - authentication
-  generated: '2026-07-22'
-  method: derived
+  - plans/neverbounce-plans-pricing.yml
+  - https://www.neverbounce.com/pricing
+  generated: '2026-08-13'
+  method: searched
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/neverbounce.png
 tags:
   - Email Verification
@@ -32,21 +37,23 @@ tags:
   - Deliverability
   - Marketing
   - List Cleaning
-  - ZeroBounce
+  - Data Quality
+  - ZoomInfo
 url: >-
   https://raw.githubusercontent.com/api-evangelist/neverbounce/refs/heads/main/apis.yml
 created: '2026-05-11'
-modified: '2026-05-11'
+modified: '2026-08-13'
 specificationVersion: '0.19'
 apis:
 - aid: neverbounce:v4-api
   name: NeverBounce API v4
   description: >-
     RESTful JSON API for email verification. Provides single email verification (`/single/check`), bulk
-    job verification (`/jobs/create`, `/jobs/parse`, `/jobs/start`, `/jobs/status`, `/jobs/results`, `/jobs/download`),
-    account info, and POE (Proof of Engagement) endpoints. Authentication uses a per-integration API key
-    (`secret_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`) passed via the `key` query/body parameter or `Authorization:
-    Bearer` header.
+    job verification (`/jobs/create`, `/jobs/parse`, `/jobs/start`, `/jobs/status`, `/jobs/results`,
+    `/jobs/search`, `/jobs/delete`, `/jobs/download`), account credit info, and Proof-of-Engagement
+    (`/poe/confirm`) endpoints. GET and POST are interchangeable; PUT and DELETE are unsupported.
+    Authentication uses a per-integration API key (`secret_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`) passed via
+    the `key` query/body parameter.
   humanURL: https://developers.neverbounce.com/docs/api-getting-started
   baseURL: https://api.neverbounce.com/v4
   tags:
@@ -57,6 +64,8 @@ apis:
   properties:
   - type: Documentation
     url: https://developers.neverbounce.com/docs/api-getting-started
+  - type: APIReference
+    url: https://developers.neverbounce.com/reference/getting-started
   - type: Verifying an Email
     url: https://developers.neverbounce.com/docs/verifying-an-email
   - type: Verifying a List
@@ -65,34 +74,58 @@ apis:
     url: https://github.com/NeverBounce
 - aid: neverbounce:neverbounce-account-api
   name: NeverBounce Account API
-  description: Account information
-  humanURL: https://developers.neverbounce.com/docs/api-getting-started
+  description: Account credit balances and job counts by state.
+  humanURL: https://developers.neverbounce.com/reference/account-info
   baseURL: https://api.neverbounce.com/v4
   tags:
   - Account
   properties:
   - type: OpenAPI
     url: openapi/neverbounce-account-api-openapi.yml
+  - type: Overlay
+    url: overlays/neverbounce-account-overlay.yaml
 - aid: neverbounce:neverbounce-jobs-api
   name: NeverBounce Jobs API
-  description: Bulk list verification jobs
-  humanURL: https://developers.neverbounce.com/docs/api-getting-started
+  description: Bulk list verification jobs — create, parse, start, status, results, search, delete, download.
+  humanURL: https://developers.neverbounce.com/reference/jobs
   baseURL: https://api.neverbounce.com/v4
   tags:
   - Jobs
   properties:
   - type: OpenAPI
     url: openapi/neverbounce-jobs-api-openapi.yml
+  - type: Overlay
+    url: overlays/neverbounce-jobs-overlay.yaml
+  - type: Webhooks
+    url: asyncapi/neverbounce-webhooks.yml
 - aid: neverbounce:neverbounce-single-api
   name: NeverBounce Single API
-  description: Single-email verification
-  humanURL: https://developers.neverbounce.com/docs/api-getting-started
+  description: Real-time verification of a single email address.
+  humanURL: https://developers.neverbounce.com/reference/single-check
   baseURL: https://api.neverbounce.com/v4
   tags:
   - Single
   properties:
   - type: OpenAPI
     url: openapi/neverbounce-single-api-openapi.yml
+  - type: Overlay
+    url: overlays/neverbounce-single-overlay.yaml
+- aid: neverbounce:neverbounce-poe-api
+  name: NeverBounce POE API
+  description: >-
+    Proof of Engagement. Server-side confirmation that a verification produced by the browser
+    JavaScript widget genuinely came from NeverBounce, using the transaction_id and
+    confirmation_token the widget issues.
+  humanURL: https://developers.neverbounce.com/reference/widget-poe-confirm
+  baseURL: https://api.neverbounce.com/v4
+  tags:
+  - POE
+  - Widget
+  properties:
+  - type: OpenAPI
+    url: openapi/neverbounce-poe-api-openapi.yml
+  - type: Overlay
+    url: overlays/neverbounce-poe-overlay.yaml
 common:
   - type: AgenticAccess
     url: agentic-access/neverbounce-agentic-access.yml
@@ -100,21 +133,77 @@ common:
     url: security/neverbounce-domain-security.yml
   - type: Authentication
     url: authentication/neverbounce-authentication.yml
+  - type: Packages
+    url: packages/neverbounce-packages.yml
+  - type: SDKs
+    url: packages/neverbounce-packages.yml
+  - type: CLI
+    url: cli/neverbounce-cli.yml
+  - type: Components
+    url: components/neverbounce-components.yml
+  - type: Conventions
+    url: conventions/neverbounce-conventions.yml
+  - type: ErrorCatalog
+    url: errors/neverbounce-problem-types.yml
+  - type: DataModel
+    url: data-model/neverbounce-data-model.yml
+  - type: Conformance
+    url: conformance/neverbounce-conformance.yml
+  - type: Lifecycle
+    url: lifecycle/neverbounce-lifecycle.yml
+  - type: Deprecation
+    url: lifecycle/neverbounce-lifecycle.yml
+  - type: StatusPage
+    url: https://status.neverbounce.com
+  - type: ChangeLog
+    url: changelog/neverbounce-changelog.yml
+  - type: Plans
+    url: plans/neverbounce-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/neverbounce-rate-limits.yml
+  - type: Webhooks
+    url: asyncapi/neverbounce-webhooks.yml
+  - type: MCPServer
+    url: mcp/neverbounce-mcp.yml
+  - type: ToolCrosswalk
+    url: mcp/neverbounce-tool-crosswalk.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: LLMsTxt
+    url: llms/neverbounce-llms.txt
+  - type: LlmsText
+    url: https://developers.neverbounce.com/llms.txt
   - type: LinkedIn
     url: https://www.linkedin.com/company/neverbounce
   - type: Website
     url: https://www.neverbounce.com
   - type: Documentation
     url: https://developers.neverbounce.com/
+  - type: DeveloperPortal
+    url: https://developers.neverbounce.com/
+  - type: APIReference
+    url: https://developers.neverbounce.com/reference/getting-started
+  - type: GettingStarted
+    url: https://developers.neverbounce.com/docs/api-getting-started
   - type: GitHubOrganization
     url: https://github.com/NeverBounce
   - type: Pricing
     url: https://www.neverbounce.com/pricing
   - type: Signup
     url: https://app.neverbounce.com/register
-
-  - type: LlmsText
-    url: https://developers.neverbounce.com/llms.txt
+  - type: Support
+    url: https://www.neverbounce.com/contact
+  - type: Blog
+    url: https://www.neverbounce.com/blog
+  - type: TermsOfService
+    url: https://www.neverbounce.com/terms-of-use
+  - type: PrivacyPolicy
+    url: https://www.zoominfo.com/legal/privacy-policy
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
+x-enrichment:
+  date: '2026-08-13'
+  status: enriched
+  artifacts_added: 26
+  pass: local-v1
