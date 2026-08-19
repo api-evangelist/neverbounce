@@ -1,0 +1,171 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.neverbounce.com/pricing
+docs: https://www.neverbounce.com/pricing
+currency: USD
+summary:
+  plan_count: 17
+  models:
+  - pay-as-you-go
+  - subscription
+  free_tier: >-
+    "Get started for free. No credit card required to verify your first email list." — free
+    analysis of a list is offered before purchase; no free credit quantity is stated on the
+    pricing page itself.
+  billing_unit: verification credit (1 credit = 1 email verified, including duplicates and bad syntax)
+  enterprise: true
+  note: >-
+    Prices read verbatim from the structured pricing table the pricing page ships in its
+    own page data (Hero_Banner.Tabs[].pricing.pricing_table). The page presents two tabs:
+    "Basic Plans" (one-off credit bundles) and "Sync" (recurring list-hygiene
+    subscriptions). Neither tab labels the rows with plan names, so the `name` below is the
+    volume tier.
+plans:
+- name: Basic — 1,000 credits
+  model: pay-as-you-go
+  price: 8
+  currency: USD
+  period: one-time
+  included_quota: 1000
+  unit: verifications
+  unit_price: 0.008
+- name: Basic — 5,000 credits
+  model: pay-as-you-go
+  price: 40
+  currency: USD
+  period: one-time
+  included_quota: 5000
+  unit: verifications
+  unit_price: 0.008
+- name: Basic — 10,000 credits
+  model: pay-as-you-go
+  price: 50
+  currency: USD
+  period: one-time
+  included_quota: 10000
+  unit: verifications
+  unit_price: 0.005
+- name: Basic — 25,000 credits
+  model: pay-as-you-go
+  price: 125
+  currency: USD
+  period: one-time
+  included_quota: 25000
+  unit: verifications
+  unit_price: 0.005
+- name: Basic — 50,000 credits
+  model: pay-as-you-go
+  price: 250
+  currency: USD
+  period: one-time
+  included_quota: 50000
+  unit: verifications
+  unit_price: 0.005
+- name: Basic — 100,000 credits
+  model: pay-as-you-go
+  price: 400
+  currency: USD
+  period: one-time
+  included_quota: 100000
+  unit: verifications
+  unit_price: 0.004
+- name: Basic — 250,000 credits
+  model: pay-as-you-go
+  price: 750
+  currency: USD
+  period: one-time
+  included_quota: 250000
+  unit: verifications
+  unit_price: 0.003
+- name: Basic — 500,000 credits
+  model: pay-as-you-go
+  price: 1500
+  currency: USD
+  period: one-time
+  included_quota: 500000
+  unit: verifications
+  unit_price: 0.003
+- name: Basic — 1,000,000 credits
+  model: pay-as-you-go
+  price: 2500
+  currency: USD
+  period: one-time
+  included_quota: 1000000
+  unit: verifications
+  unit_price: 0.0025
+- name: Basic — 2,000,000 credits
+  model: pay-as-you-go
+  price: 4000
+  currency: USD
+  period: one-time
+  included_quota: 2000000
+  unit: verifications
+  unit_price: 0.002
+- name: Sync — 1,000 emails
+  model: subscription
+  price: 10
+  currency: USD
+  period: month
+  included_quota: 1000
+  unit: emails kept clean
+- name: Sync — 10,000 emails
+  model: subscription
+  price: 49
+  currency: USD
+  period: month
+  included_quota: 10000
+  unit: emails kept clean
+- name: Sync — 50,000 emails
+  model: subscription
+  price: 99
+  currency: USD
+  period: month
+  included_quota: 50000
+  unit: emails kept clean
+- name: Sync — 100,000 emails
+  model: subscription
+  price: 159
+  currency: USD
+  period: month
+  included_quota: 100000
+  unit: emails kept clean
+- name: Sync — 250,000 emails
+  model: subscription
+  price: 249
+  currency: USD
+  period: month
+  included_quota: 250000
+  unit: emails kept clean
+- name: Sync — 500,000 emails
+  model: subscription
+  price: 499
+  currency: USD
+  period: month
+  included_quota: 500000
+  unit: emails kept clean
+- name: Sync — 1,000,000 emails
+  model: subscription
+  price: 999
+  currency: USD
+  period: month
+  included_quota: 1000000
+  unit: emails kept clean
+enterprise:
+  available: true
+  contact: https://www.neverbounce.com/request-enterprise-quote
+  note: >-
+    Volumes above 2,000,000 credits and enterprise terms are quoted. A demo request form
+    (https://www.neverbounce.com/request-demo) and dedicated nonprofit and startup pages
+    are published in the sitemap.
+api_relevant_notes:
+- >-
+  Billing is per verification credit and is charged on the API surface: each
+  /single/check call costs 1 credit, "including duplicate verification requests and bad
+  syntax data" (https://developers.neverbounce.com/reference/single).
+- >-
+  Remaining balance is readable from the API — /account/info returns paid and free credits
+  used and remaining, and /single/check accepts `credits_info=1` to return the same
+  counters inline.
+- >-
+  The free list analysis runs as a job sample (`job_sample_started` /
+  `job_sample_finished` callbacks) before credits are spent on a full run.

@@ -1,0 +1,87 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  openapi/neverbounce-single-api-openapi.yml, openapi/neverbounce-jobs-api-openapi.yml,
+  openapi/neverbounce-account-api-openapi.yml, openapi/neverbounce-poe-api-openapi.yml,
+  and the probed MCP endpoint https://developers.neverbounce.com/mcp
+surfaces:
+  openapi:
+    files:
+    - openapi/neverbounce-single-api-openapi.yml
+    - openapi/neverbounce-jobs-api-openapi.yml
+    - openapi/neverbounce-account-api-openapi.yml
+    - openapi/neverbounce-poe-api-openapi.yml
+    origin: >-
+      Harvested from the OpenAPI 3.1 definition NeverBounce publishes behind its
+      interactive API reference (ReadMe API Designer, `neverbounce-api.json`).
+    gated: false
+  graphql:
+    endpoint: null
+    gated: null
+    note: NeverBounce publishes no GraphQL surface.
+  mcp:
+    url: https://developers.neverbounce.com/mcp
+    gated: true
+    note: >-
+      tools/list returns HTTP 401 with MCP error -32001 "Authorization required". The tool
+      list is therefore not enumerable anonymously and no tool names are asserted here.
+      Evidence in mcp/neverbounce-mcp.yml.
+coverage:
+  mcp_tools_known: 0
+  rest_operations: 10
+  bound: 0
+  mcp_only: 0
+  rest_only: 10
+crosswalk: []
+mcp_only: []
+rest_only:
+- operationId: single-check
+  path: /single/check
+  method: get
+  category: verification
+- operationId: jobs-create
+  path: /jobs/create
+  method: post
+  category: bulk-jobs
+- operationId: jobs-parse
+  path: /jobs/parse
+  method: post
+  category: bulk-jobs
+- operationId: jobs-start
+  path: /jobs/start
+  method: post
+  category: bulk-jobs
+- operationId: jobs-status
+  path: /jobs/status
+  method: get
+  category: bulk-jobs
+- operationId: jobs-results
+  path: /jobs/results
+  method: get
+  category: bulk-jobs
+- operationId: jobs-search
+  path: /jobs/search
+  method: get
+  category: bulk-jobs
+- operationId: jobs-delete
+  path: /jobs/delete
+  method: post
+  category: bulk-jobs
+- operationId: account-info
+  path: /account/info
+  method: get
+  category: account
+- operationId: widget-poe-confirm
+  path: /poe/confirm
+  method: post
+  category: widget
+notes:
+- >-
+  Every published REST operation is rest_only. The MCP endpoint NeverBounce serves is the
+  ReadMe documentation MCP, not an API-wrapping server, so there is no honest binding to
+  draw between its (unenumerable) tools and these operations. Recording a speculative
+  mapping would credit NeverBounce with an agent surface over its verification API that it
+  does not ship.
+- >-
+  If NeverBounce later publishes an API MCP server, the ten operations above are the
+  binding targets; skills/ already packages the three flows an agent would need.

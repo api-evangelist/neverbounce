@@ -1,0 +1,167 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://github.com/NeverBounce (first-party org) plus registry metadata endpoints:
+  registry.npmjs.org, pypi.org/pypi/*/json, rubygems.org/api/v1/gems/*.json,
+  repo.packagist.org/p2/*, search.maven.org, proxy.golang.org, azuresearch-usnc.nuget.org
+docs: https://developers.neverbounce.com/reference/getting-started
+summary:
+  official_count: 9
+  third_party_count: 3
+  registries:
+  - npm
+  - pypi
+  - rubygems
+  - packagist
+  - maven
+  - go
+  note: >-
+    NeverBounce's own getting-started page names Node.js, Java, .NET and Python as the
+    supported SDKs. Only the Node.js and Ruby libraries have shipped a release since 2021;
+    the PHP, Python, Java, Go and .NET clients have not been published to a registry in
+    four to six years, which is the clearest decay signal on this provider. The single most
+    recent first-party release is not an SDK at all — it is the n8n community node
+    (2026-02-17), maintained from @zoominfo.com accounts, which is where the team's
+    integration effort is now going.
+  github_org: https://github.com/NeverBounce
+  github_org_repo_count: 11
+packages:
+- name: neverbounce
+  registry: npm
+  url: https://www.npmjs.com/package/neverbounce
+  repository: https://github.com/NeverBounce/NeverBounceApi-NodeJS
+  language: javascript
+  official: true
+  version: 5.0.5
+  published: '2025-05-12'
+  note: >-
+    Current first-party SDK. v5 was rewritten in TypeScript, moved to ES Modules and the
+    Fetch API, and requires Node.js 18+. Server-side only — NeverBounce documents that the
+    standard API must not be called from a browser.
+- name: neverbounce-api
+  registry: rubygems
+  url: https://rubygems.org/gems/neverbounce-api
+  repository: https://github.com/NeverBounce/NeverBounceApi-Ruby
+  language: ruby
+  official: true
+  version: 1.2.1
+  published: '2025-11-13'
+  note: The official Ruby wrapper for the v4 API. Most recently released first-party client.
+- name: neverbounce/neverbounce-php
+  registry: packagist
+  url: https://packagist.org/packages/neverbounce/neverbounce-php
+  repository: https://github.com/NeverBounce/NeverBounceAPI-PHP
+  language: php
+  official: true
+  version: v4.5.0
+  published: '2020-08-03'
+  note: >-
+    Last Packagist release 2020-08-03; the GitHub repository has commits as recent as
+    2023-11-27 that were never tagged to a release.
+- name: neverbounce-sdk
+  registry: pypi
+  url: https://pypi.org/project/neverbounce-sdk/
+  repository: https://github.com/NeverBounce/NeverBounceApi-Python
+  language: python
+  official: true
+  version: 4.3.0
+  published: '2020-08-05'
+  note: Official Python SDK. No release in six years.
+- name: com.neverbounce:neverbounce-api-java
+  registry: maven
+  url: https://central.sonatype.com/artifact/com.neverbounce/neverbounce-api-java
+  repository: https://github.com/NeverBounce/NeverBounceApi-Java
+  language: java
+  official: true
+  version: 4.0.15
+  published: '2020-11-11'
+  note: Published under the com.neverbounce group id, so first-party. No release since 2020.
+- name: github.com/NeverBounce/NeverBounceApi-Go
+  registry: go
+  url: https://pkg.go.dev/github.com/NeverBounce/NeverBounceApi-Go
+  repository: https://github.com/NeverBounce/NeverBounceApi-Go
+  language: go
+  official: true
+  version: v0.0.0-20210719183823-e6b7873134ae
+  published: '2021-07-19'
+  note: >-
+    Never tagged a semantic version — the Go module proxy only resolves a pseudo-version
+    from the last commit (2021-07-19).
+- name: NeverBounceApi-DotNet
+  registry: null
+  url: https://github.com/NeverBounce/NeverBounceApi-DotNet
+  repository: https://github.com/NeverBounce/NeverBounceApi-DotNet
+  language: csharp
+  official: true
+  version: null
+  published: null
+  note: >-
+    First-party .NET client exists as a GitHub repository (last push 2023-07-04) but is not
+    published to nuget.org under a NeverBounce-owned account. Checked
+    azuresearch-usnc.nuget.org: every `NeverBounce*` package on NuGet is authored by a
+    third party (Joel Christner, Mike Mollick, Hymma). Recorded null rather than guessed.
+- name: neverbounce-cli
+  registry: rubygems
+  url: https://rubygems.org/gems/neverbounce-cli
+  repository: https://github.com/NeverBounce/NeverBounceCli-Ruby
+  language: ruby
+  official: true
+  version: 1.1.0
+  published: '2020-02-21'
+  note: >-
+    "The official NeverBounce CLI written in Ruby" — the binary that backs
+    cli/neverbounce-cli.yml. No release in six years; source repo last pushed 2021-01-11.
+- name: n8n-nodes-neverbounce-email-verification
+  registry: npm
+  url: https://www.npmjs.com/package/n8n-nodes-neverbounce-email-verification
+  repository: https://github.com/NeverBounce/n8n-nodes-neverbounce
+  language: javascript
+  official: true
+  version: 1.0.20
+  published: '2026-02-17'
+  category: workflow-node
+  note: >-
+    First-party n8n community node — package author is "NeverBounce
+    <support@neverbounce.com>", the repository sits in the NeverBounce GitHub org, and both
+    npm maintainers hold @zoominfo.com addresses. Not an SDK, but the most recently
+    published first-party artifact by five years.
+- name: NeverBounce/neverbounce-laravel
+  registry: null
+  url: https://github.com/NeverBounce/neverbounce-laravel
+  repository: https://github.com/NeverBounce/neverbounce-laravel
+  language: php
+  official: true
+  version: null
+  published: null
+  note: >-
+    Laravel integration in the first-party org, last pushed 2016-06-06 and never published
+    to Packagist under the neverbounce vendor. Recorded null — checked, nothing to record.
+third_party:
+- name: NeverBounce.SDK
+  registry: nuget
+  url: https://www.nuget.org/packages/NeverBounce.SDK
+  language: csharp
+  official: false
+  version: 4.2.0
+  published: null
+  note: >-
+    Community .NET SDK by Mike Mollick, not published by NeverBounce. Version read from the
+    NuGet search index; publish date not recorded by that endpoint for this package.
+- name: NeverBounce
+  registry: nuget
+  url: https://www.nuget.org/packages/NeverBounce
+  language: csharp
+  official: false
+  version: 1.0.6
+  published: '2026-01-15'
+  note: Community wrapper by Joel Christner (github.com/jchristn/NeverBounce).
+- name: neverbounce
+  registry: pypi
+  url: https://pypi.org/project/neverbounce/
+  language: python
+  official: false
+  version: 0.2.0
+  published: '2016-11-12'
+  note: >-
+    Community package by Martin Kosír targeting the legacy API. Not to be confused with the
+    official `neverbounce-sdk`.

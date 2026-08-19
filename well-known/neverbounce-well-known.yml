@@ -1,0 +1,127 @@
+generated: '2026-08-13'
+method: probed
+source: live HTTPS probes of every NeverBounce host named in apis.yml and openapi/ servers[]
+summary:
+  hosts_probed: 4
+  paths_probed: 7
+  documents_found: 0
+  result: >-
+    NeverBounce serves no /.well-known/ documents. Every path returns 404 on the API host,
+    the docs host and the marketing host. app.neverbounce.com answers HTTP 200 with the
+    single-page-app HTML shell for every path including ones that cannot exist, so those
+    200s are catch-all responses, not documents, and are recorded as misses.
+  pointer_emitted: false
+probes:
+- host: api.neverbounce.com
+  paths:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: developers.neverbounce.com
+  paths:
+  - path: /.well-known/security.txt
+    status: 404
+    file: null
+  - path: /.well-known/openid-configuration
+    status: 404
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+    file: null
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+    file: null
+    note: >-
+      Probed specifically because developers.neverbounce.com/mcp answers a real MCP
+      JSON-RPC error requiring authorization; no protected-resource metadata is published
+      to discover the authorization server.
+  - path: /.well-known/api-catalog
+    status: 404
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: www.neverbounce.com
+  paths:
+  - path: /.well-known/security.txt
+    status: 403
+    file: null
+    note: Cloudflare bot challenge, not a served document.
+  - path: /.well-known/openid-configuration
+    status: 403
+    file: null
+  - path: /.well-known/oauth-authorization-server
+    status: 403
+    file: null
+  - path: /.well-known/api-catalog
+    status: 403
+    file: null
+  - path: /.well-known/ai-plugin.json
+    status: 404
+    file: null
+  - path: /.well-known/agent-card.json
+    status: 404
+    file: null
+  - path: /.well-known/agent.json
+    status: 404
+    file: null
+- host: app.neverbounce.com
+  paths:
+  - path: /.well-known/security.txt
+    status: 200
+    file: null
+    note: >-
+      SPA catch-all. Returns text/html beginning `<!DOCTYPE html><html lang="en"
+      data-critical...` for every /.well-known/* path, including paths that cannot exist.
+      Not a document — treated as a miss.
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: null
+    note: SPA catch-all HTML shell, not JSON.
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: null
+    note: SPA catch-all HTML shell, not JSON.
+  - path: /.well-known/api-catalog
+    status: 200
+    file: null
+    note: SPA catch-all HTML shell.
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    file: null
+    note: SPA catch-all HTML shell, not JSON.
+  - path: /.well-known/agent-card.json
+    status: 200
+    file: null
+    note: SPA catch-all HTML shell, not an A2A AgentCard. No a2a/ artifact written.
+  - path: /.well-known/agent.json
+    status: 200
+    file: null
+    note: SPA catch-all HTML shell, not an A2A AgentCard.

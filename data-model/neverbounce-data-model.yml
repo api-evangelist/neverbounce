@@ -1,0 +1,180 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  openapi/_original/neverbounce-api.json (the OpenAPI 3.1 definition NeverBounce publishes
+  behind its interactive API reference), enriched from
+  https://developers.neverbounce.com/reference/single-check and
+  https://developers.neverbounce.com/reference/jobs-status
+summary:
+  entity_count: 6
+  relationship_count: 6
+  id_style: >-
+    Integer surrogate keys. `job_id` is an integer, not a prefixed string; there are no
+    Stripe-style typed id prefixes anywhere in this API, so an id carries no type
+    information on its own.
+  note: >-
+    The published definition declares no reusable `components.schemas` at all — every
+    response is an inline anonymous object, and the only component is the `sec0` security
+    scheme. The entity graph below is therefore reconstructed from the shape of the inline
+    response objects and their id-reference fields, not from $ref links.
+entities:
+- name: Account
+  operations: [account-info]
+  identifier: null
+  description: >-
+    The authenticated account itself. Has no id in the response — it is implied by the API
+    key.
+  fields:
+  - credits_info.paid_credits_used
+  - credits_info.free_credits_used
+  - credits_info.paid_credits_remaining
+  - credits_info.free_credits_remaining
+  - job_counts.completed
+  - job_counts.under_review
+  - job_counts.queued
+  - job_counts.processing
+  - execution_time
+- name: Verification
+  operations: [single-check]
+  identifier: null
+  description: >-
+    The result of verifying one address in real time. Ephemeral — it is returned, billed
+    one credit, and not stored under a retrievable id.
+  fields:
+  - result
+  - flags[]
+  - suggested_correction
+  - address_info
+  - credits_info
+  - execution_time
+  enums:
+    result: [valid, invalid, disposable, catchall, unknown]
+  note: >-
+    The 200 response is a `oneOf` whose shape depends on the `address_info` and
+    `credits_info` request flags.
+- name: AddressInfo
+  operations: [single-check, jobs-results]
+  identifier: null
+  description: The parsed decomposition of an email address, returned only when requested.
+  fields:
+  - original_email
+  - normalized_email
+  - addr
+  - alias
+  - host
+  - fqdn
+  - domain
+  - subdomain
+- name: Job
+  operations: [jobs-create, jobs-parse, jobs-start, jobs-status, jobs-search, jobs-delete]
+  identifier: job_id
+  identifier_type: integer
+  description: >-
+    A bulk verification run over a submitted list. Created from either a remote URL or
+    supplied data, indexed (parsed), then run.
+  fields:
+  - id
+  - filename
+  - created_at
+  - started_at
+  - finished_at
+  - failure_reason
+  - job_status
+  - percent_complete
+  - bounce_estimate
+  - total.records
+  - total.billable
+  - total.processed
+  - total.valid
+  - total.invalid
+  - total.catchall
+  - total.disposable
+  - total.unknown
+  - total.duplicates
+  - total.bad_syntax
+  enums:
+    job_status: [complete, failed]
+  note: >-
+    `job_status` values above are only those appearing in the published examples and
+    changelog. NeverBounce does not publish the full status enumeration, nor the
+    `failure_reason` code list.
+- name: JobResult
+  operations: [jobs-results, jobs-download]
+  identifier: null
+  description: >-
+    One row of a completed job: the input record as supplied plus the verification
+    NeverBounce produced for it.
+  fields:
+  - data.email
+  - data.id
+  - data.name
+  - verification.result
+  - verification.flags[]
+  - verification.suggested_correction
+  - verification.address_info
+  note: >-
+    `data` echoes back the caller's own columns, so the caller's own record id travels
+    through the job and comes back on the result — the join key between NeverBounce and the
+    caller's system.
+- name: PoeTransaction
+  operations: [widget-poe-confirm]
+  identifier: transaction_id
+  identifier_type: string
+  description: >-
+    A Proof of Engagement handshake. The browser widget produces a transaction_id and
+    confirmation_token which the caller's server posts back to confirm the verification
+    genuinely came from NeverBounce.
+  fields:
+  - email
+  - transaction_id
+  - confirmation_token
+  - result
+relationships:
+- from: Account
+  to: Job
+  type: has_many
+  via: implicit (API key scope)
+  note: job_counts on /account/info aggregates the account's jobs by state.
+- from: Job
+  to: JobResult
+  type: has_many
+  via: job_id
+  note: /jobs/results?job_id= and /jobs/download?job_id= page through a job's rows.
+- from: JobResult
+  to: Verification
+  type: has_one
+  via: verification
+  note: Embedded, not referenced — the same shape /single/check returns.
+- from: JobResult
+  to: AddressInfo
+  type: has_one
+  via: verification.address_info
+- from: Verification
+  to: AddressInfo
+  type: has_one
+  via: address_info
+  note: Present only when address_info=1 is requested.
+- from: PoeTransaction
+  to: Verification
+  type: belongs_to
+  via: result
+  note: >-
+    Carries the verification `result` string produced client-side by the widget, which
+    /poe/confirm exists to authenticate.
+lifecycle:
+  job:
+    states_documented_via_callbacks:
+    - job_parsing_started
+    - job_parsing_finished
+    - job_sample_started
+    - job_sample_finished
+    - job_run_started
+    - job_stats_updated
+    - job_review_completed
+    - job_run_finished
+    - job_failed
+    - job_deleted
+    source: https://developers.neverbounce.com/reference/job-callbacks
+    note: >-
+      The job lifecycle is documented far more precisely by the callback event list than by
+      any status enumeration in the spec. See asyncapi/neverbounce-webhooks.yml.

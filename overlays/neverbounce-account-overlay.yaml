@@ -1,0 +1,83 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay — NeverBounce Account API
+  version: 1.0.0
+  x-generated: '2026-08-13'
+  x-method: generated
+  x-source: openapi/neverbounce-account-api-openapi.yml
+  x-description: Captures API Evangelist enrichments over the OpenAPI definition NeverBounce publishes.
+    The original definition is never mutated; apply this overlay to layer runtime semantics, billing rules,
+    usage policy and one documented-but-unspecified operation on top of it.
+extends: openapi/neverbounce-account-api-openapi.yml
+actions:
+- target: $.info
+  description: Record the harvest provenance of this definition.
+  update:
+    x-provenance:
+      harvested: '2026-08-13'
+      method: searched
+      source: https://developers.neverbounce.com/reference/single-check (ReadMe API Designer definition
+        neverbounce-api.json, uploaded 2025-06-16)
+      note: The definition is served inside the docs page state rather than at a downloadable URL; /openapi.json
+        and /swagger.json return the docs SPA shell.
+- target: $.info
+  description: Attach the runtime semantics an agent needs but the definition does not carry.
+  update:
+    x-error-envelope:
+      transport_status: 200
+      field: status
+      failure_values:
+      - general_failure
+      - auth_failure
+      - temp_unavail
+      - throttle_triggered
+      - bad_referrer
+      warning: Application errors — including authentication failure and throttling — are returned with
+        HTTP 200. Read `status` before `result`.
+      source: https://developers.neverbounce.com/reference/error-handling
+    x-rate-limit-signalling:
+      headers: false
+      body_signal: 'status: throttle_triggered'
+      retry_after: false
+      source: https://developers.neverbounce.com/reference/usage-guidelines
+    x-idempotency:
+      supported: false
+      note: No idempotency key. /single/check bills one credit per call including duplicates, so a retry
+        is a repeat charge.
+    x-encoding:
+      interchangeable_verbs:
+      - GET
+      - POST
+      unsupported_verbs:
+      - PUT
+      - DELETE
+      - HEAD
+      - OPTIONS
+      content_types:
+      - application/json
+      - application/x-www-form-urlencoded
+      booleans: form-encoded accepts 1/0 only; JSON accepts true/false or 1/0
+      plus_addressing: encode + as %2B in form-encoded requests
+      source: https://developers.neverbounce.com/reference/encoding-requests
+    x-versioning:
+      style: uri-path
+      current: v4.2
+      also_served:
+      - v4
+      - v4.1
+      source: https://developers.neverbounce.com/reference/versioning
+- target: $.components.securitySchemes.sec0
+  description: Name and describe the API key scheme, which the published definition leaves undescribed.
+  update:
+    description: Static per-integration API key, prefixed `secret_` followed by 32 characters. Created
+      as a Custom Integration App at https://app.neverbounce.com/apps/custom-integration/new. Accepted
+      in the query string, an application/x-www-form-urlencoded body, or an application/json body. `public_`
+      widget keys and legacy V3 credentials are rejected with `auth_failure`.
+    x-key-prefix: secret_
+    x-docs: https://developers.neverbounce.com/reference/authentication
+- target: $.paths['/account/info'].get
+  description: Summarise what the account endpoint is actually for.
+  update:
+    x-purpose: Read remaining paid and free verification credits and a count of jobs by state. The cheapest
+      pre-flight check before spending credits.
+    x-billable: false

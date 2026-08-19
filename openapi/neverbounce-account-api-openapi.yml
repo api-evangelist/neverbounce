@@ -1,78 +1,182 @@
 openapi: 3.1.0
 info:
-  title: NeverBounce API v4 Account API
-  version: '4'
-  description: 'RESTful JSON API for email verification. Provides single email verification and bulk list (jobs) verification endpoints. Authentication uses a per-integration API key (format `secret_xxxx...`) supplied via the `key` query/body parameter or the `Authorization: Bearer` header.'
+  title: NeverBounce Account API
+  version: '4.2'
+  description: Account information and remaining credits. Part of the NeverBounce v4 email verification
+    API. Harvested from the OpenAPI definition NeverBounce publishes behind its interactive API reference
+    at developers.neverbounce.com (ReadMe API Designer definition `neverbounce-api.json`).
   contact:
-    name: NeverBounce Developers
+    name: NeverBounce Support
+    email: support@neverbounce.com
     url: https://developers.neverbounce.com/
 servers:
-- url: https://api.neverbounce.com/v4
-  description: NeverBounce v4 production API
+- url: https://api.neverbounce.com/v4.2
 security:
-- ApiKeyQuery: []
-- BearerAuth: []
+- sec0: []
 tags:
 - name: Account
-  description: Account information
+  description: Account information and remaining credits
 paths:
   /account/info:
     get:
-      tags:
-      - Account
-      summary: Get account information and remaining credits
-      parameters:
-      - name: key
-        in: query
-        required: false
-        schema:
-          type: string
+      summary: /info
+      description: ''
+      operationId: account-info
       responses:
         '200':
-          description: Account info
+          description: '200'
           content:
             application/json:
+              examples:
+                Result:
+                  value: "{\n    \"status\": \"success\",\n    \"credits_info\": {\n        \"paid_credits_used\"\
+                    : 0,\n        \"free_credits_used\": 0,\n        \"paid_credits_remaining\": 9950791,\n\
+                    \        \"free_credits_remaining\": 0\n    },\n    \"job_counts\": {\n        \"\
+                    completed\": 409,\n        \"under_review\": 0,\n        \"queued\": 0,\n        \"\
+                    processing\": 0\n    },\n    \"execution_time\": 896\n}"
               schema:
-                $ref: '#/components/schemas/AccountInfoResponse'
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  credits_info:
+                    type: object
+                    properties:
+                      paid_credits_used:
+                        type: integer
+                        example: 0
+                        default: 0
+                      free_credits_used:
+                        type: integer
+                        example: 0
+                        default: 0
+                      paid_credits_remaining:
+                        type: integer
+                        example: 9950791
+                        default: 0
+                      free_credits_remaining:
+                        type: integer
+                        example: 0
+                        default: 0
+                  job_counts:
+                    type: object
+                    properties:
+                      completed:
+                        type: integer
+                        example: 409
+                        default: 0
+                      under_review:
+                        type: integer
+                        example: 0
+                        default: 0
+                      queued:
+                        type: integer
+                        example: 0
+                        default: 0
+                      processing:
+                        type: integer
+                        example: 0
+                        default: 0
+                  execution_time:
+                    type: integer
+                    example: 896
+                    default: 0
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      x-readme:
+        code-samples:
+        - language: curl
+          code: "curl --request GET\\\n  --url 'https://api.neverbounce.com/v4.2/account/info?key={api_key}'"
+        - language: php
+          code: '<?php
+
+
+            // Set API key
+
+            \NeverBounce\Auth::setApiKey($api_key);
+
+
+            // Make request for API info
+
+            $info = \NeverBounce\Account::info();'
+        - language: javascript
+          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\n\
+            \n// Get account info\nclient.account.info().then(\n    resp => // Handle successful response\n\
+            \    err => // Handle error response\n);"
+          name: NodeJS
+        - language: python
+          code: 'import neverbounce_sdk
+
+
+            # Create sdk client
+
+            client = neverbounce_sdk.client(api_key=''api_key'')
+
+
+            # Get account info
+
+            info = client.account_info();'
+        - language: go
+          code: '// Instantiate wrapper
+
+            client := neverbounce.New("api_key")
+
+
+            // Get account info
+
+            accountInfo, err := client.Account.Info()'
+        - language: ruby
+          code: '# Instantiate API client
+
+            client = NeverBounce::API::Client.new(api_key: "api_key")
+
+
+            # Get account info
+
+            resp = client.account_info'
+        - language: csharp
+          code: '// Create SDK object
+
+            var sdk = new NeverBounceSdk("api_key");
+
+
+            // Get account info
+
+            AccountInfoResponseModel resp = await sdk.Account.Info();'
+          name: .NET
+        - language: java
+          code: '// Instantiate Client
+
+            NeverbounceClient neverbounceClient = NeverbounceClientFactory.create(apiKey);
+
+
+            // Make Request
+
+            AccountInfoResponse accountInfoResponse = neverbounceClient.createAccountInfoRequest().execute();'
+        samples-languages:
+        - curl
+        - php
+        - javascript
+        - python
+        - go
+        - ruby
+        - csharp
+        - java
+      tags:
+      - Account
 components:
-  schemas:
-    AccountInfoResponse:
-      type: object
-      properties:
-        status:
-          type: string
-        credits_info:
-          type: object
-          properties:
-            paid_credits_used:
-              type: integer
-            free_credits_used:
-              type: integer
-            paid_credits_remaining:
-              type: integer
-            free_credits_remaining:
-              type: integer
-        job_counts:
-          type: object
-          properties:
-            completed:
-              type: integer
-            under_review:
-              type: integer
-            queued:
-              type: integer
-            processing:
-              type: integer
-        execution_time:
-          type: integer
   securitySchemes:
-    ApiKeyQuery:
+    sec0:
       type: apiKey
       in: query
       name: key
-    BearerAuth:
-      type: http
-      scheme: bearer
-externalDocs:
-  description: NeverBounce API getting started
-  url: https://developers.neverbounce.com/docs/api-getting-started

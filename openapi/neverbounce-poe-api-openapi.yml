@@ -1,0 +1,116 @@
+openapi: 3.1.0
+info:
+  title: NeverBounce POE API
+  version: '4.2'
+  description: Proof of Engagement confirmation for the JavaScript widget. Part of the NeverBounce v4
+    email verification API. Harvested from the OpenAPI definition NeverBounce publishes behind its interactive
+    API reference at developers.neverbounce.com (ReadMe API Designer definition `neverbounce-api.json`).
+  contact:
+    name: NeverBounce Support
+    email: support@neverbounce.com
+    url: https://developers.neverbounce.com/
+servers:
+- url: https://api.neverbounce.com/v4.2
+security:
+- sec0: []
+tags:
+- name: POE
+  description: Proof of Engagement confirmation for the JavaScript widget
+paths:
+  /poe/confirm:
+    post:
+      summary: /poe/confirm
+      description: ''
+      operationId: widget-poe-confirm
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - email
+              - transaction_id
+              - confirmation_token
+              - result
+              properties:
+                email:
+                  type: string
+                transaction_id:
+                  type: string
+                confirmation_token:
+                  type: string
+                result:
+                  type: string
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  'status': 'success', \n  'token_confirmed': true, \n  'execution_time':\
+                    \ 35\n}"
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      x-readme:
+        code-samples:
+        - language: curl
+          code: "curl --request POST\\\n  --url https://api.neverbounce.com/v4/poe/confirm\\\n  --data\
+            \ key={api_key}\\\n  --data email={email}\\\n  --data transaction_id={transaction_id}\\\n\
+            \  --data confirmation_token={confirmation_token}\n  --data result={result}"
+        - language: php
+          code: "<?php\n\n// Authenticate requests\n\\NeverBounce\\Auth::setApiKey($api_key);\n\n// Confirm\
+            \ submission\n$poe = \\NeverBounce\\PoE::confirm(\n  $_POST['email'], \n  $_POST['nb-confirmation-token'],\
+            \ \n  $_POST['nb-transaction-id'], \n  $_POST['nb-result']\n);"
+        - language: javascript
+          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\n\
+            \n// Get the job status\nclient.jobs.poe(\n  req.body['email'], \n  req.body['nb-confirmation-token'],\
+            \ \n  req.body['nb-transaction-id'], \n  req.body['nb-result']\n).then(\n    resp => // Handle\
+            \ successful response,\n    err => // Handle errors\n);"
+          name: NodeJs
+        - language: python
+          code: "# Create sdk client\nclient = neverbounce_sdk.client(api_key='api_key')\n\n# Confirm\
+            \ frontend widget\nresp = client.poe_confirm(\n    email='support@neverbounce.com',\n    transaction_id='NBPOE-TXN-5942940c09669',\n\
+            \    confirmation_token='e3173fdbbdce6bad26522dae792911f2',\n    result='valid'\n)"
+        - language: go
+          code: "// Instantiate wrapper\nclient := neverbounce.New(\"api_key\")\n\n// Confirm the client\
+            \ side verification\nconfirmInfo, err := client.POE.Confirm(&nbModels.POEConfirmRequestModel{\n\
+            \  Email:             \"support@neverbounce.com\",\n  ConfirmationToken: \"1341234jkh12h34lb2134b143\"\
+            ,\n  TransactionID:     \"1340813265013984123\",\n  Result:            \"valid\",\n})"
+        - language: ruby
+          code: "# Instantiate API client\nclient = NeverBounce::API::Client.new(api_key: \"api_key\"\
+            )\n\n# Confirm verification\nresp = client.poe_confirm(\n  email: \"alice@isp.com\", \n  transaction_id:\
+            \ \"NBTRNS-abcdefg123456\", \n  confirmation_token: \"abcdefg123456\", \n  result: \"valid\"\
+            \n)"
+        - language: csharp
+          code: "// Create SDK object\nvar sdk = new NeverBounceSdk(\"api_key\");\n\n// Create poe confirm\
+            \ model\n var model = new POEConfirmRequestModel();\nmodel.email = \"support@neverbounce.com\"\
+            ;\nmodel.confirmation_token = \"e3173fdbbdce6bad26522dae792911f2\";\nmodel.transaction_id\
+            \ = \"NBPOE-TXN-5942940c09669\";\nmodel.result = \"valid\";\n\n// Confirm frontend verification\n\
+            POEConfirmResponseModel resp = await sdk.POE.Confirm(model);"
+          name: .NET
+        samples-languages:
+        - curl
+        - php
+        - javascript
+        - python
+        - go
+        - ruby
+        - csharp
+      tags:
+      - POE
+components:
+  securitySchemes:
+    sec0:
+      type: apiKey
+      in: query
+      name: key

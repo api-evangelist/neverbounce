@@ -1,0 +1,54 @@
+generated: '2026-08-13'
+method: probed
+source: https://developers.neverbounce.com/mcp
+name: NeverBounce Developer Docs MCP
+status: published
+deployment:
+  mode: remote
+  endpoint: https://developers.neverbounce.com/mcp
+  install: null
+  package: null
+  auth: unknown
+  verified: probed
+x-evidence:
+  fetched: '2026-08-13'
+  url: https://developers.neverbounce.com/mcp
+  method: POST
+  request: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+  http_status: 401
+  body: '{"jsonrpc":"2.0","error":{"code":-32001,"message":"Authorization required"},"id":null}'
+  initialize_probe:
+    method: initialize
+    http_status: 401
+    body: >-
+      {"jsonrpc":"2.0","error":{"code":-32001,"message":"Authorization
+      required"},"id":null}
+  oauth_metadata:
+    /.well-known/oauth-protected-resource: 404
+    /.well-known/oauth-authorization-server: 404
+tools_enumerable: false
+tools: []
+notes:
+- >-
+  The endpoint is a genuine MCP server: it speaks JSON-RPC 2.0 and returns a structured
+  MCP error (-32001) rather than an HTML 404. It is served from NeverBounce's own docs
+  host, developers.neverbounce.com, which NeverBounce controls.
+- >-
+  It is the documentation MCP that the ReadMe platform provisions for a docs project, not
+  a server that wraps the v4 verification API. Its tools are documentation search and
+  retrieval, not `/single/check` or `/jobs/*`. Nothing anonymous confirms the tool names,
+  so none are recorded.
+- >-
+  Authorization is required and no protected-resource or authorization-server metadata is
+  published, so an MCP client cannot discover how to authenticate from the endpoint alone.
+  `auth` is recorded as unknown rather than guessed.
+- >-
+  No NeverBounce MCP server exists on npm, PyPI or the NeverBounce GitHub organization. A
+  local-stdio distribution was searched for and not found; mode is remote only.
+- >-
+  mcp.neverbounce.com does not resolve (connection failure), and api.neverbounce.com/mcp
+  returns 404.
+- >-
+  llms.txt is published at https://developers.neverbounce.com/llms.txt and is saved to
+  llms/neverbounce-llms.txt; it lists documentation pages, not MCP tools, so it cannot be
+  used to reconstruct a tool list.

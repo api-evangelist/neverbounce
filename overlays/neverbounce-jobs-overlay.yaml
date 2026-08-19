@@ -1,0 +1,221 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enrichment overlay — NeverBounce Jobs API
+  version: 1.0.0
+  x-generated: '2026-08-13'
+  x-method: generated
+  x-source: openapi/neverbounce-jobs-api-openapi.yml
+  x-description: Captures API Evangelist enrichments over the OpenAPI definition NeverBounce publishes.
+    The original definition is never mutated; apply this overlay to layer runtime semantics, billing rules,
+    usage policy and one documented-but-unspecified operation on top of it.
+extends: openapi/neverbounce-jobs-api-openapi.yml
+actions:
+- target: $.info
+  description: Record the harvest provenance of this definition.
+  update:
+    x-provenance:
+      harvested: '2026-08-13'
+      method: searched
+      source: https://developers.neverbounce.com/reference/single-check (ReadMe API Designer definition
+        neverbounce-api.json, uploaded 2025-06-16)
+      note: The definition is served inside the docs page state rather than at a downloadable URL; /openapi.json
+        and /swagger.json return the docs SPA shell.
+- target: $.info
+  description: Attach the runtime semantics an agent needs but the definition does not carry.
+  update:
+    x-error-envelope:
+      transport_status: 200
+      field: status
+      failure_values:
+      - general_failure
+      - auth_failure
+      - temp_unavail
+      - throttle_triggered
+      - bad_referrer
+      warning: Application errors — including authentication failure and throttling — are returned with
+        HTTP 200. Read `status` before `result`.
+      source: https://developers.neverbounce.com/reference/error-handling
+    x-rate-limit-signalling:
+      headers: false
+      body_signal: 'status: throttle_triggered'
+      retry_after: false
+      source: https://developers.neverbounce.com/reference/usage-guidelines
+    x-idempotency:
+      supported: false
+      note: No idempotency key. /single/check bills one credit per call including duplicates, so a retry
+        is a repeat charge.
+    x-encoding:
+      interchangeable_verbs:
+      - GET
+      - POST
+      unsupported_verbs:
+      - PUT
+      - DELETE
+      - HEAD
+      - OPTIONS
+      content_types:
+      - application/json
+      - application/x-www-form-urlencoded
+      booleans: form-encoded accepts 1/0 only; JSON accepts true/false or 1/0
+      plus_addressing: encode + as %2B in form-encoded requests
+      source: https://developers.neverbounce.com/reference/encoding-requests
+    x-versioning:
+      style: uri-path
+      current: v4.2
+      also_served:
+      - v4
+      - v4.1
+      source: https://developers.neverbounce.com/reference/versioning
+- target: $.components.securitySchemes.sec0
+  description: Name and describe the API key scheme, which the published definition leaves undescribed.
+  update:
+    description: Static per-integration API key, prefixed `secret_` followed by 32 characters. Created
+      as a Custom Integration App at https://app.neverbounce.com/apps/custom-integration/new. Accepted
+      in the query string, an application/x-www-form-urlencoded body, or an application/json body. `public_`
+      widget keys and legacy V3 credentials are rejected with `auth_failure`.
+    x-key-prefix: secret_
+    x-docs: https://developers.neverbounce.com/reference/authentication
+- target: $.paths
+  description: Add /jobs/download, which NeverBounce documents in its API reference but omits from the
+    published OpenAPI definition (its API explorer cannot render an application/octet-stream response).
+  update:
+    /jobs/download:
+      get:
+        tags:
+        - Jobs
+        operationId: jobs-download
+        summary: /download
+        description: Download the completed job results as a CSV. Returns application/octet-stream, not
+          JSON. Requires only the API key and job_id; the remaining parameters segment which result codes
+          are included. Documented at https://developers.neverbounce.com/reference/jobs-download but absent
+          from the published definition.
+        parameters:
+        - name: key
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: job_id
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: valids
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum:
+            - 0
+            - 1
+        - name: invalids
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum:
+            - 0
+            - 1
+        - name: catchalls
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum:
+            - 0
+            - 1
+        - name: unknowns
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum:
+            - 0
+            - 1
+        - name: disposables
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum:
+            - 0
+            - 1
+        - name: include_duplicates
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum:
+            - 0
+            - 1
+        - name: email_status
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum:
+            - 0
+            - 1
+        responses:
+          '200':
+            description: CSV of job results
+            content:
+              application/octet-stream:
+                schema:
+                  type: string
+                  format: binary
+        x-source: https://developers.neverbounce.com/reference/jobs-download
+- target: $.paths['/jobs/create'].post
+  description: Record the payload ceiling and concurrency rules that govern job creation.
+  update:
+    x-limits:
+      max_supplied_data_payload_mb: 25
+      payload_exceeded_status: 413
+      concurrent_jobs: 10
+      runs_per_day: 50
+      creation_rate: no more than 10 jobs per 100,000 items per hour
+      enforcement: Exceeding the creation rate may result in the account being locked and API access disabled.
+      source: https://developers.neverbounce.com/reference/usage-guidelines
+    x-callbacks:
+      parameters:
+      - callback_url
+      - callback_headers
+      events:
+      - job_parsing_started
+      - job_parsing_finished
+      - job_sample_started
+      - job_sample_finished
+      - job_run_started
+      - job_stats_updated
+      - job_review_completed
+      - job_run_finished
+      - job_failed
+      - job_deleted
+      payload: '{"job_id":<int>,"event":"<name>"}'
+      signature_verification: false
+      note: callback_headers is the only authentication available on inbound callbacks.
+      source: https://developers.neverbounce.com/reference/job-callbacks
+    x-idempotency: Not idempotent. Re-submitting the same list creates a second job and a second billable
+      run.
+- target: $.paths['/jobs/status'].get
+  description: Note the 4.2 failure_reason addition and the polling alternative.
+  update:
+    x-since: 4.2 added failure_reason, populated when job_status is failed. The reason-code enumeration
+      is not published.
+    x-polling: Job callbacks (see /jobs/create x-callbacks) replace polling; NeverBounce still supports
+      polling as a fallback.
+- target: $.paths['/jobs/results'].get
+  description: Document the pagination contract.
+  update:
+    x-pagination:
+      style: page-number
+      request:
+      - page
+      - items_per_page
+      response:
+      - total_results
+      - total_pages
+      - query.page
+      - query.items_per_page
+      cursors: false
+      link_header: false

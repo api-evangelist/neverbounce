@@ -1,0 +1,174 @@
+{
+  "item": [
+    {
+      "id": "8a5a1651-4d30-4620-ae78-30706faf970b",
+      "name": "Single",
+      "description": {
+        "content": "Single-email verification",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f40c8fa6-885b-45f3-b1aa-392efa4f67af",
+          "name": "Verify a single email address",
+          "request": {
+            "name": "Verify a single email address",
+            "description": {
+              "content": "Submits a single email address for real-time verification. Returns a result classification (valid, invalid, disposable, catchall, unknown) along with flags and an optional suggested correction.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "single",
+                "check"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "key",
+                  "value": "<string>",
+                  "description": "API key (may also be supplied via Authorization header)"
+                },
+                {
+                  "disabled": false,
+                  "key": "email",
+                  "value": "<email>",
+                  "description": "(Required) Email address to verify"
+                },
+                {
+                  "disabled": false,
+                  "key": "address_info",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "credits_info",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "timeout",
+                  "value": "<integer>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5b980ec1-d0ee-4816-80c4-ee7c2aea6018",
+              "name": "Verification response",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "single",
+                    "check"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "key",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "email",
+                      "value": "<email>"
+                    },
+                    {
+                      "key": "address_info",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "credits_info",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "timeout",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "key",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"success\",\n  \"result\": \"catchall\",\n  \"flags\": [\n    \"string\",\n    \"string\"\n  ],\n  \"suggested_correction\": \"string\",\n  \"execution_time\": 5814\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.neverbounce.com/v4",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "query"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "4a824465-6849-4c17-96d4-70d8f10a310f",
+    "name": "NeverBounce API v4 Account Single API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "RESTful JSON API for email verification. Provides single email verification and bulk list (jobs) verification endpoints. Authentication uses a per-integration API key (format `secret_xxxx...`) supplied via the `key` query/body parameter or the `Authorization: Bearer` header.\n\nContact Support:\n Name: NeverBounce Developers",
+      "type": "text/plain"
+    }
+  }
+}

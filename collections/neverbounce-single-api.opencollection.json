@@ -1,0 +1,66 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "NeverBounce API v4 Account Single API",
+    "version": "4"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "key",
+      "value": "{{key}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Single",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Verify a single email address",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.neverbounce.com/v4/single/check",
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "query",
+                "description": "API key (may also be supplied via Authorization header)"
+              },
+              {
+                "name": "email",
+                "value": "",
+                "type": "query",
+                "description": "Email address to verify"
+              },
+              {
+                "name": "address_info",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "credits_info",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "timeout",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Submits a single email address for real-time verification. Returns a result classification (valid, invalid, disposable, catchall, unknown) along with flags and an optional suggested correction."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

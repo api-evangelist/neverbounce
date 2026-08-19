@@ -1,0 +1,178 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://developers.neverbounce.com/reference/encoding-requests,
+  https://developers.neverbounce.com/reference/authentication,
+  https://developers.neverbounce.com/reference/error-handling,
+  https://developers.neverbounce.com/reference/versioning,
+  https://developers.neverbounce.com/reference/usage-guidelines, and
+  openapi/neverbounce-*-openapi.yml
+api: NeverBounce API v4
+base_url: https://api.neverbounce.com/v4
+transport:
+  protocol: https
+  format: json
+  request_content_types:
+  - application/x-www-form-urlencoded
+  - application/json
+  response_content_types:
+  - application/json
+  - application/octet-stream
+  http_methods:
+    supported:
+    - GET
+    - POST
+    unsupported:
+    - PUT
+    - DELETE
+    - HEAD
+    - OPTIONS
+    interchangeable: true
+    note: >-
+      v4 accepts GET and POST interchangeably for every endpoint; the verbs listed in the
+      reference are recommendations, not requirements. Other verbs are rejected.
+  cors:
+    enabled: false
+    note: >-
+      Browser calls to the standard API are blocked and unsupported by design — the API
+      key would be exposed client-side. NeverBounce directs browser use cases to the
+      JavaScript widget (see components/neverbounce-components.yml).
+  booleans:
+    application/json: 'true/false or 1/0'
+    application/x-www-form-urlencoded: '1/0 only'
+    note: >-
+      Form-encoded requests accept only the integer representation. Sending `true` in a
+      form body is a documented mistake.
+  nested_parameters:
+    style: PHP-style bracket notation
+    example: 'request_meta_data[leverage_historical_data]=0'
+  encoding_gotcha: >-
+    Plus-addressed emails must be percent-encoded as `%2B` in
+    application/x-www-form-urlencoded requests, otherwise `+` decodes to a space and the
+    address is verified incorrectly.
+authentication:
+  style: static API key
+  parameter: key
+  locations:
+  - query
+  - form body
+  - json body
+  key_prefixes:
+    secret_: server-side v4 API
+    public_: JavaScript widget only
+    webhook_secret_: generated single/check webhook URLs
+  oauth2: false
+  detail: authentication/neverbounce-authentication.yml
+idempotency:
+  supported: false
+  header: null
+  note: >-
+    NeverBounce publishes no idempotency key, no request-replay window and no
+    deduplication guarantee. This matters commercially: /single/check bills one credit per
+    call "including duplicate verification requests", so a retried request is a retried
+    charge. Callers must deduplicate before calling. Bulk jobs are the closest thing to an
+    idempotent surface — a created job has a stable `job_id` and /jobs/status can be polled
+    safely — but job creation itself is not idempotent and re-creating a list creates a
+    second billable job.
+  scored_pointer: false
+pagination:
+  style: page-number
+  request_params:
+  - name: page
+    type: integer
+    note: 1-indexed page selector.
+  - name: items_per_page
+    type: integer
+    note: Page size.
+  response_fields:
+  - total_results
+  - total_pages
+  - query.page
+  - query.items_per_page
+  applies_to:
+  - jobs-results
+  - jobs-search
+  note: >-
+    The request paging parameters are echoed back inside the `query` object of the
+    response alongside `total_results` and `total_pages`. There are no cursors, no Link
+    headers and no next/prev URLs.
+filtering:
+  jobs-results:
+    params: [valids, invalids, disposables, catchalls, unknowns]
+    note: Result-code segmentation flags, echoed back in `query`.
+  jobs-search:
+    params: [job_id, filename, job_status]
+  jobs-download:
+    params: [valids, invalids, catchalls, unknowns, disposables, include_duplicates, email_status]
+    note: >-
+      /jobs/download returns application/octet-stream (a CSV), not JSON, and is the only
+      non-JSON response surface.
+field_expansion:
+  supported: partial
+  mechanism: opt-in flags
+  flags:
+  - name: address_info
+    values: [0, 1]
+    effect: Adds the parsed/normalized address object to a /single/check response.
+  - name: credits_info
+    values: [0, 1]
+    effect: Adds account credit counters to a /single/check response.
+  - name: timeout
+    effect: >-
+      Caps how long the API will attempt real-time verification before returning
+      `unknown`. Total request time can still exceed it — network latency is not counted.
+  note: >-
+    Implemented as a `oneOf` in the published definition — the /single/check 200 response
+    schema varies by which flags were requested.
+metadata:
+  supported: true
+  field: request_meta_data
+  note: >-
+    Accepted on /single/check and /jobs/create. Currently carries one documented key,
+    `leverage_historical_data`, which turns the Hybrid historical-data algorithm off and
+    forces classic real-time verification. It is a request control, not user-defined
+    metadata storage.
+request_tracing:
+  request_id: false
+  note: >-
+    No request-id or correlation header is documented on requests or responses. The only
+    per-call diagnostic is `execution_time` (milliseconds) in the response body. For bulk
+    work, `job_id` is the durable handle.
+versioning:
+  style: URI path segment
+  pattern: https://api.neverbounce.com/{VERSION}/{endpoint}
+  current: v4.2
+  also_served: [v4, v4.1]
+  breaking_changes: >-
+    NeverBounce states each version change may contain backwards-incompatible changes and
+    directs callers to the changelog before upgrading. v4.2 shipped a breaking rename of
+    the `acedemic_host` flag to `academic_host`.
+  detail: lifecycle/neverbounce-lifecycle.yml
+error_envelope:
+  shape: status-in-200-body
+  transport_status: 200
+  fields:
+  - status
+  - message
+  - execution_time
+  values: [success, general_failure, auth_failure, temp_unavail, throttle_triggered, bad_referrer]
+  rfc9457: false
+  note: >-
+    This is the single most important runtime convention on this API and the one most
+    likely to break a naive agent: application errors — including authentication failure
+    and rate limiting — are returned with a HTTP 200 and a `status` other than `success`.
+    Checking the HTTP status code alone will read a failed verification as a success. HTTP
+    4xx/5xx are still used for transport-level problems (413 on oversized payloads, 5xx on
+    NeverBounce-side faults).
+  detail: errors/neverbounce-problem-types.yml
+rate_limit_signaling:
+  headers: false
+  body_signal: 'status: throttle_triggered'
+  status_code_on_exhaustion: 200
+  retry_after: false
+  detail: rate-limits/neverbounce-rate-limits.yml
+webhooks:
+  outbound: job callbacks (POST JSON {job_id, event})
+  inbound: /single/check as a URL-addressable webhook
+  signature_verification: false
+  detail: asyncapi/neverbounce-webhooks.yml

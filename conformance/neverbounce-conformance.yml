@@ -1,0 +1,120 @@
+generated: '2026-08-13'
+method: derived
+source: >-
+  openapi/_original/neverbounce-api.json plus the NeverBounce developer reference
+  (encoding-requests, authentication, error-handling, usage-guidelines, versioning) and
+  security/neverbounce-domain-security.yml
+summary:
+  asserted: 12
+  conforms: 3
+  note: >-
+    NeverBounce implements a small, pre-standards JSON-over-HTTP style. It predates and
+    ignores most of the cross-cutting HTTP API conventions an agent would look for: errors
+    are not RFC 9457, rate limits are not RFC 9331/6585 signalled, deprecation is not RFC
+    8594 signalled, and there is no OAuth surface at all. What it does conform to is
+    narrow but real: OpenAPI 3.1, TLS with HSTS, and conventional page-number pagination.
+standards:
+- id: openapi-3.1
+  name: OpenAPI Specification 3.1
+  conforms: true
+  evidence: >-
+    NeverBounce publishes an OpenAPI 3.1.0 definition (`neverbounce-api.json`, ReadMe API
+    Designer, uploaded 2025-06-16) that drives its interactive API reference. Harvested to
+    openapi/_original/neverbounce-api.json — 10 operations, all with operationIds, servers
+    https://api.neverbounce.com/v4.2.
+  caveats: >-
+    It is not downloadable. /openapi.json, /swagger.json and /branches/4.2/apis/
+    neverbounce-api.json all return the docs SPA shell or 404; the definition is only
+    reachable inside the reference page's server-rendered state. It also carries
+    `x-readme-fauxas: true` and declares no reusable components.schemas — every response is
+    an inline anonymous object, and the 4xx responses have empty schemas. Real, provider
+    owned, and machine-readable, but not published as a retrievable artifact.
+- id: json
+  name: JSON request/response media type
+  conforms: true
+  evidence: >-
+    application/json accepted on request and returned on every operation except
+    /jobs/download, which returns application/octet-stream (CSV).
+- id: tls-hsts
+  name: TLS 1.3 with HSTS
+  conforms: true
+  evidence: >-
+    api.neverbounce.com, developers.neverbounce.com and www.neverbounce.com all negotiate
+    TLSv1.3 and set Strict-Transport-Security (api and docs max-age 31536000, www max-age
+    63072000). Probed 2026-08-13 — see security/neverbounce-domain-security.yml.
+- id: rfc9457
+  name: RFC 9457 Problem Details for HTTP APIs
+  conforms: false
+  evidence: >-
+    Errors are returned as HTTP 200 with a proprietary `{status, message, execution_time}`
+    envelope. No application/problem+json media type anywhere in the definition.
+- id: http-status-semantics
+  name: Conventional HTTP status code semantics
+  conforms: false
+  evidence: >-
+    Authentication failure, throttling and general failure are all returned with HTTP 200
+    and signalled only in the body's `status` field. 4xx/5xx are reserved for transport
+    faults. This is the single largest conformance gap and the one most likely to break an
+    agent.
+- id: rest-verbs
+  name: HTTP method semantics
+  conforms: false
+  evidence: >-
+    GET and POST are explicitly interchangeable for every operation, and PUT, DELETE, HEAD
+    and OPTIONS are unsupported — including for /jobs/delete, which is a POST.
+- id: rate-limit-headers
+  name: RFC 9331 / RFC 6585 rate-limit signalling
+  conforms: false
+  evidence: >-
+    No RateLimit-*, X-RateLimit-* or Retry-After headers are documented; exhaustion is a
+    body-level `status: throttle_triggered` inside a 200. See
+    rate-limits/neverbounce-rate-limits.yml.
+- id: rfc8594
+  name: RFC 8594 Sunset header / deprecation signalling
+  conforms: false
+  evidence: >-
+    A written versioning and breaking-change policy exists and breaking changes are
+    labelled in the changelog, but no Sunset or Deprecation headers are emitted and no
+    operation is marked `deprecated` in the published definition.
+- id: idempotency
+  name: Idempotency keys for unsafe requests
+  conforms: false
+  evidence: >-
+    No idempotency header or key is published. Because /single/check bills a credit per
+    call including duplicates, a retry is a repeat charge.
+- id: oauth2
+  name: OAuth 2.0
+  conforms: false
+  evidence: >-
+    Single static API key (`sec0`, apiKey in query). No authorization server, no token
+    endpoint, no scopes. /.well-known/oauth-authorization-server returns 404 on every host.
+- id: openid-connect
+  name: OpenID Connect
+  conforms: false
+  evidence: /.well-known/openid-configuration returns 404 on every NeverBounce host.
+- id: pagination
+  name: Conventional page-number pagination
+  conforms: true
+  evidence: >-
+    /jobs/results and /jobs/search take `page` and `items_per_page` and return
+    `total_results`, `total_pages` and an echoed `query` object. Consistent across both
+    paged operations, though there are no Link headers or cursors.
+- id: asyncapi
+  name: AsyncAPI
+  conforms: false
+  evidence: >-
+    A real event surface exists (10 job callback events) but no AsyncAPI document is
+    published; /asyncapi.yaml and /asyncapi.json return 404 on both the API and docs hosts.
+    See asyncapi/neverbounce-webhooks.yml.
+compliance_programs:
+  published: false
+  checked:
+  - https://www.neverbounce.com/security
+  - https://www.neverbounce.com/compliance
+  - https://trust.zoominfo.com
+  note: >-
+    No certification list is readable from a NeverBounce-controlled surface. The
+    neverbounce.com footer routes privacy and trust to the ZoomInfo parent
+    (zoominfo.com/legal/privacy-policy, trust.zoominfo.com); trust.zoominfo.com returns 200
+    but renders its content client-side, so no certification could be read and none is
+    asserted. No Compliance pointer is emitted for this provider.

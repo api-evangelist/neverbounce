@@ -1,0 +1,96 @@
+generated: '2026-08-13'
+method: searched
+source: https://developers.neverbounce.com/reference/usage-guidelines
+docs:
+- https://developers.neverbounce.com/reference/usage-guidelines
+- https://developers.neverbounce.com/reference/error-handling
+- https://developers.neverbounce.com/docs/widget-getting-started
+summary:
+  limit_count: 5
+  headers_published: false
+  exhaustion_status_code: 200
+  exhaustion_body_status: throttle_triggered
+  note: >-
+    NeverBounce publishes concrete concurrency and volume ceilings for bulk jobs, but
+    publishes no per-second/per-minute request rate for single verification and no
+    RateLimit-* / X-RateLimit-* / Retry-After response headers. Throttling is signalled in
+    the JSON body of a HTTP 200 response as `"status": "throttle_triggered"`, so an agent
+    cannot detect exhaustion from status codes or headers alone — it must parse the body.
+limits:
+- id: concurrent-jobs
+  scope: per-account
+  window: concurrent
+  limit: 10
+  unit: jobs
+  description: Each account may run 10 concurrent bulk verification jobs.
+  source: https://developers.neverbounce.com/reference/usage-guidelines
+- id: job-runs-per-day
+  scope: per-account
+  window: 1d
+  limit: 50
+  unit: job runs
+  description: Maximum of 50 job runs per day per account.
+  source: https://developers.neverbounce.com/reference/usage-guidelines
+- id: job-creation-rate
+  scope: per-account
+  window: 1h
+  limit: 10
+  unit: jobs per 100k items
+  description: >-
+    Do not create more than 10 jobs for every 100,000 items per hour. NeverBounce states
+    that sending too many small jobs in a short period can result in the account being
+    locked and API access disabled.
+  enforcement: account lockout
+  source: https://developers.neverbounce.com/reference/usage-guidelines
+- id: supplied-data-payload
+  scope: per-request
+  window: null
+  limit: 25
+  unit: MB
+  description: >-
+    Maximum request payload of 25MB when submitting a list with the `supplied_data` input
+    method on /jobs/create. Exceeding it returns HTTP 413.
+  exhaustion_status_code: 413
+  source: https://developers.neverbounce.com/reference/usage-guidelines
+- id: single-verification-usage
+  scope: per-account
+  window: null
+  limit: null
+  unit: null
+  description: >-
+    No numeric rate is published for /single/check. NeverBounce instead publishes a usage
+    rule: single verification is for interactive events (form submit, button click) only,
+    and using it to walk an existing list one-by-one may result in the account being locked
+    and API access disabled. Use /jobs/* for lists.
+  enforcement: account lockout
+  source: https://developers.neverbounce.com/reference/usage-guidelines
+- id: widget-throttling
+  scope: per-widget
+  window: configurable
+  limit: null
+  unit: verifications
+  description: >-
+    The JavaScript widget has customer-configured throttling rules (per IP and global)
+    set in the dashboard. When the limit is hit the widget returns the verification as
+    `unknown` rather than blocking the form. This is a customer-set limit, not a
+    NeverBounce-published one.
+  source: https://developers.neverbounce.com/docs/widget-getting-started
+response_headers:
+  published: false
+  checked:
+  - X-RateLimit-Limit
+  - X-RateLimit-Remaining
+  - X-RateLimit-Reset
+  - RateLimit
+  - RateLimit-Policy
+  - Retry-After
+  note: >-
+    None documented anywhere in the developer reference. The only runtime signal is the
+    body-level `status: throttle_triggered`, documented on the error-handling page, and
+    the credits counters returned by /account/info and by `credits_info=1` on
+    /single/check.
+exceptions:
+  contact: support@neverbounce.com
+  note: >-
+    NeverBounce states exceptions to the bulk limits can be made for some use cases on
+    request.

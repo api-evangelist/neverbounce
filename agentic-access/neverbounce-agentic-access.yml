@@ -1,36 +1,43 @@
-generated: '2026-07-15'
+generated: '2026-08-13'
 method: generated
-source: openapi/neverbounce-openapi.yml
+source: openapi/neverbounce-account-api-openapi.yml, openapi/neverbounce-jobs-api-openapi.yml,
+  openapi/neverbounce-poe-api-openapi.yml, openapi/neverbounce-single-api-openapi.yml
 description: Recommended x-agentic-access execution contracts, classified heuristically from
   the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
   audience per deployment. See research/curity/agentic-governance/.
 summary:
-  operations: 8
+  operations: 10
   by_action_class:
-    acting: 4
-    connected: 4
+    connected: 5
+    acting: 5
   by_consequence:
-    write: 4
-    read: 4
+    read: 5
+    write: 5
   human_in_the_loop_required: 0
 operations:
-- path: /single/check
-  method: post
+- path: /account/info
+  method: get
+  operationId: account-info
   x-agentic-access:
-    action-class: acting
-    consequence: write
-    subject: required
-    audience: null
+    action-class: connected
+    consequence: read
+    subject: optional
     token:
-      max-ttl: 900
-    escalation:
-      human-in-the-loop: conditional
-      triggers:
-      - abnormal
-      - high-value
-    audit: required
+      max-ttl: 3600
+    audit: none
+- path: /jobs/search
+  method: get
+  operationId: jobs-search
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
 - path: /jobs/create
   method: post
+  operationId: jobs-create
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -46,6 +53,7 @@ operations:
     audit: required
 - path: /jobs/parse
   method: post
+  operationId: jobs-parse
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -61,6 +69,7 @@ operations:
     audit: required
 - path: /jobs/start
   method: post
+  operationId: jobs-start
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -76,6 +85,7 @@ operations:
     audit: required
 - path: /jobs/status
   method: get
+  operationId: jobs-status
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -85,6 +95,7 @@ operations:
     audit: none
 - path: /jobs/results
   method: get
+  operationId: jobs-results
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -92,17 +103,41 @@ operations:
     token:
       max-ttl: 3600
     audit: none
-- path: /jobs/download
-  method: get
+- path: /jobs/delete
+  method: post
+  operationId: jobs-delete
   x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
     token:
-      max-ttl: 3600
-    audit: none
-- path: /account/info
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /poe/confirm
+  method: post
+  operationId: widget-poe-confirm
+  x-agentic-access:
+    action-class: acting
+    consequence: write
+    subject: required
+    audience: null
+    token:
+      max-ttl: 900
+    escalation:
+      human-in-the-loop: conditional
+      triggers:
+      - abnormal
+      - high-value
+    audit: required
+- path: /single/check
   method: get
+  operationId: single-check
   x-agentic-access:
     action-class: connected
     consequence: read

@@ -1,0 +1,44 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "NeverBounce API v4 Account API",
+    "version": "4"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "key",
+      "value": "{{key}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Account",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get account information and remaining credits",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.neverbounce.com/v4/account/info",
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Get account information and remaining credits"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

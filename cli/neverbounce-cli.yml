@@ -1,0 +1,36 @@
+generated: '2026-08-13'
+method: searched
+source: https://rubygems.org/api/v1/gems/neverbounce-cli.json
+name: neverbounce-cli
+description: >-
+  "The official NeverBounce CLI written in Ruby" — the vendor's own description on
+  RubyGems. Published under the same RubyGems account and homepage (neverbounce.com) as the
+  official `neverbounce-api` client library.
+official: true
+homepage: https://neverbounce.com
+registry: rubygems
+package: https://rubygems.org/gems/neverbounce-cli
+repository: https://github.com/NeverBounce/NeverBounceCli-Ruby
+version: 1.1.0
+published: '2020-02-21'
+install:
+- method: rubygems
+  command: gem install neverbounce-cli
+commands: []
+commands_note: >-
+  The command surface is NOT recorded here. NeverBounce publishes no CLI documentation on
+  developers.neverbounce.com — the developer hub covers only the REST API and the
+  JavaScript widget — and the source repository
+  (https://github.com/NeverBounce/NeverBounceCli-Ruby, last pushed 2021-01-11) carries no
+  description or published command reference. Enumerating commands would mean inventing
+  them. What is verifiable is that the tool exists, is first-party, and has not shipped a
+  release since February 2020.
+status: stale
+notes:
+- >-
+  Last release 2020-02-21, six years before this pass. It predates API version 4.2 (job
+  callbacks, `academic_host` rename, `failure_reason`), so it cannot be assumed to speak
+  the current contract.
+- >-
+  Not referenced anywhere in the developer documentation, which lists only the Node.js,
+  Java, .NET and Python SDKs.

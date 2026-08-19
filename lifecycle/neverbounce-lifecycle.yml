@@ -1,0 +1,84 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://developers.neverbounce.com/reference/versioning,
+  https://developers.neverbounce.com/changelog/version-42,
+  https://developers.neverbounce.com/reference/authentication,
+  https://status.neverbounce.com
+api: NeverBounce API v4
+versioning:
+  style: uri-path
+  pattern: https://api.neverbounce.com/{VERSION}/{endpoint}
+  current: v4.2
+  served:
+  - v4
+  - v4.1
+  - v4.2
+  published_definition_server: https://api.neverbounce.com/v4.2
+  policy: >-
+    "Each version change may contain backwards incompatible changes. Always check our
+    change log before updating your application." NeverBounce publishes no support window,
+    no minimum notice period and no end-of-life calendar for a version.
+  policy_url: https://developers.neverbounce.com/reference/versioning
+deprecation:
+  policy_published: true
+  policy_url: https://developers.neverbounce.com/reference/authentication
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  events:
+  - version: v3
+    state: retired
+    detail: >-
+      The legacy V3 API is retired for new integrations and its credentials are explicitly
+      rejected by V4: an 8-character username or 12–16 character secret key returns
+      `auth_failure`. The V3 documentation is still linked from the getting-started page as
+      "legacy API (V3) docs".
+    source: https://developers.neverbounce.com/reference/authentication
+  - version: v4.2
+    state: breaking-change
+    detail: >-
+      The `acedemic_host` verification flag was renamed to `academic_host`, marked
+      [Breaking] in the changelog. Jobs also stopped being eligible for manual review by
+      default — that behaviour now requires opt-in at job creation.
+    source: https://developers.neverbounce.com/changelog/version-42
+  note: >-
+    There is a written versioning-and-breaking-change policy and a dated changelog, and
+    breaking changes are labelled as such. What is missing is machine-readable signalling:
+    no Sunset or Deprecation response headers, no `deprecated: true` on any operation in
+    the published OpenAPI definition, and no dates attached to retirement.
+status_page:
+  url: https://status.neverbounce.com
+  platform: Atlassian Statuspage
+  http_status: 200
+  title: ZoomInfo Status
+  note: >-
+    status.neverbounce.com resolves to the shared ZoomInfo status page (NeverBounce is a
+    ZoomInfo company); the same page is linked from the neverbounce.com footer as
+    https://status.zoominfo.com/.
+  probed: '2026-08-13'
+sla:
+  published: false
+  note: >-
+    No public uptime SLA, latency target or credit-back commitment is published on the
+    developer site or the pricing page. Enterprise terms are quoted through
+    https://www.neverbounce.com/request-enterprise-quote.
+changelog:
+  url: https://developers.neverbounce.com/changelog
+  detail: changelog/neverbounce-changelog.yml
+support:
+  email: support@neverbounce.com
+  contact: https://www.neverbounce.com/contact
+  incident_channel: https://status.neverbounce.com
+  note: >-
+    The error-handling page still points callers at a Twitter/X account
+    (twitter.com/neverbounceapi) to check API status, which predates the Statuspage.
+maintenance_signals:
+  docs_last_updated: '2025-06-16'
+  note: >-
+    Every reference page in the developer hub carries an `updatedAt` of 2025-06-16, and the
+    published OpenAPI definition was uploaded 2025-06-16. The newest changelog entry is
+    version 4.2. The most recently released first-party SDK is the Ruby gem
+    (2025-11-13); five of the eight first-party clients have not shipped a release since
+    2020–2021. See packages/neverbounce-packages.yml.

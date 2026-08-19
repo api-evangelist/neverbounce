@@ -1,288 +1,1202 @@
 openapi: 3.1.0
 info:
-  title: NeverBounce API v4 Account Jobs API
-  version: '4'
-  description: 'RESTful JSON API for email verification. Provides single email verification and bulk list (jobs) verification endpoints. Authentication uses a per-integration API key (format `secret_xxxx...`) supplied via the `key` query/body parameter or the `Authorization: Bearer` header.'
+  title: NeverBounce Jobs API
+  version: '4.2'
+  description: Bulk list verification jobs. Part of the NeverBounce v4 email verification API. Harvested
+    from the OpenAPI definition NeverBounce publishes behind its interactive API reference at developers.neverbounce.com
+    (ReadMe API Designer definition `neverbounce-api.json`).
   contact:
-    name: NeverBounce Developers
+    name: NeverBounce Support
+    email: support@neverbounce.com
     url: https://developers.neverbounce.com/
 servers:
-- url: https://api.neverbounce.com/v4
-  description: NeverBounce v4 production API
+- url: https://api.neverbounce.com/v4.2
 security:
-- ApiKeyQuery: []
-- BearerAuth: []
+- sec0: []
 tags:
 - name: Jobs
   description: Bulk list verification jobs
 paths:
-  /jobs/create:
-    post:
-      tags:
-      - Jobs
-      summary: Create a verification job
-      description: Creates a bulk verification job from either a remote URL containing a CSV/list of emails or from inline supplied data.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/JobCreateRequest'
-      responses:
-        '200':
-          description: Job created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JobCreateResponse'
-  /jobs/parse:
-    post:
-      tags:
-      - Jobs
-      summary: Parse a previously uploaded job
-      description: Begins parsing of an uploaded list to prepare it for verification.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-              - job_id
-              properties:
-                key:
-                  type: string
-                job_id:
-                  type: integer
-                auto_start:
-                  type: boolean
-      responses:
-        '200':
-          description: Parse acknowledgement
-  /jobs/start:
-    post:
-      tags:
-      - Jobs
-      summary: Start verification of a parsed job
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-              - job_id
-              properties:
-                key:
-                  type: string
-                job_id:
-                  type: integer
-                run_sample:
-                  type: boolean
-      responses:
-        '200':
-          description: Start acknowledgement
-  /jobs/status:
+  /jobs/search:
     get:
-      tags:
-      - Jobs
-      summary: Get job status
+      summary: /search
+      description: ''
+      operationId: jobs-search
       parameters:
-      - name: key
-        in: query
-        required: false
-        schema:
-          type: string
       - name: job_id
         in: query
-        required: true
+        description: Filter jobs based on it's id
         schema:
           type: integer
-      responses:
-        '200':
-          description: Job status
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/JobStatusResponse'
-  /jobs/results:
-    get:
-      tags:
-      - Jobs
-      summary: Get paginated job results
-      parameters:
-      - name: key
+          format: int32
+      - name: filename
         in: query
-        required: false
+        description: Filter jobs based on the filename (exact match)
         schema:
           type: string
-      - name: job_id
+      - name: job_status
         in: query
-        required: true
+        description: Filter jobs by the job status
         schema:
-          type: integer
+          type: string
       - name: page
         in: query
-        required: false
+        description: The page to grab the jobs from
         schema:
           type: integer
+          format: int32
+          default: 1
       - name: items_per_page
         in: query
-        required: false
+        description: The number of jobs to display
         schema:
           type: integer
+          format: int32
+          default: 10
       responses:
         '200':
-          description: Paginated job results
-  /jobs/download:
-    get:
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"status\": \"success\",\n  \"total_results\": 1,\n  \"total_pages\": 1,\n\
+                    \  \"query\": {\n    \"page\": 1,\n    \"items_per_page\": 10,\n  },\n  \"results\"\
+                    : [\n    {\n      \"id\": 277461,\n      \"status\": \"complete\",\n      \"filename\"\
+                    : \"Created from Array.csv\",\n      \"created_at\": \"2017-07-25 16:25:19\",\n  \
+                    \    \"started_at\": \"2017-07-25 16:25:30\",\n      \"finished_at\": \"2017-07-25\
+                    \ 16:25:31\",\n      \"total\": {\n        \"records\": 2,\n        \"billable\":\
+                    \ 2,\n        \"processed\": 2,\n        \"valid\": 0,\n        \"invalid\": 2,\n\
+                    \        \"catchall\": 0,\n        \"disposable\": 0,\n        \"unknown\": 0,\n \
+                    \       \"duplicates\": 0,\n        \"bad_syntax\": 0\n      },\n      \"bounce_estimate\"\
+                    : 0,\n      \"percent_complete\": 100\n    }\n  ],\n  \"execution_time\": 388\n}"
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      x-readme:
+        code-samples:
+        - language: curl
+          code: "curl --request GET\\\n  --url 'https://api.neverbounce.com/v4.2/jobs/search?key={api_key}'"
+        - language: php
+          code: '<?php
+
+
+            // Set API key
+
+            \NeverBounce\Auth::setApiKey($api_key);
+
+
+            $query = [
+
+            //    ''job_id'' => 10000, // Filter jobs based on id
+
+            //    ''filename'' => ''Book1.csv'', // Filter jobs based on filename
+
+            //    ''job_status'' => ''complete'', // Show completed jobs only
+
+            //    ''page'' => 1, // Page to start from
+
+            //    ''items_per_page'' => 10, // Number of items per page
+
+            ];
+
+
+            // Search for jobs in your account
+
+            $job = \NeverBounce\Jobs::search($query);'
+        - language: javascript
+          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\n\
+            \n// Search jobs\nclient.jobs.search({\n//    'job_id': 10000, // Filter jobs based on id\n\
+            //    'filename': 'Book1.csv', // Filter jobs based on filename\n//    'job_status': 'complete',\
+            \ // Show completed jobs only\n//    'page': 1, // Page to start from\n//    'items_per_page':\
+            \ 10, // Number of items per page\n}).then(\n    resp => // Handle successful response,\n\
+            \    err => // Handle error response\n););"
+          name: NodeJs
+        - language: python
+          code: "import neverbounce_sdk\n\n# Create sdk client\nclient = neverbounce_sdk.client(api_key='api_key)\n\
+            \n# Get jobs\njobs = client.jobs_search(\n    # job_id=10000,  # Filter jobs based on id\n\
+            \    # filename='Book1.csv',  # Filter jobs based on filename\n    # job_status='complete',\
+            \  # Show completed jobs only\n    # page=1,  # Page to start from\n    # items_per_page=10,\
+            \  # Number of items per page\n)\n\n# iterate through jobs\nfor job in jobs:\n    print(job)"
+        - language: go
+          code: "// Instantiate wrapper\nclient := neverbounce.New(\"api_key\")\n\n// Search for jobs\n\
+            searchResults, err := client.Jobs.Search(&nbModels.JobsSearchRequestModel{\n  //JobFilename:\
+            \ \"MyListName.csv\",\n  //JobID: 289010,\n  //JobStatus: \"complete\",\n  //ItemsPerPage:\
+            \ 10,\n  //Page: 1,\n})"
+        - language: ruby
+          code: '# Instantiate API client
+
+            client = NeverBounce::API::Client.new(api_key: "api_key")
+
+
+            # Search for jobs
+
+            resp = client.jobs_search(page: 1, per_page: 10)
+
+
+            # Process items:
+
+            resp.results.each do |item|'
+        - language: csharp
+          code: '// Create SDK object
+
+            var sdk = new NeverBounceSdk("api_key");
+
+
+            // Create search model
+
+            var model = new JobSearchRequestModel();
+
+            //model.job_id = 288025;
+
+            //model.job_status = "complete";
+
+            //model.filename = "MyFile.csv";
+
+            //model.items_per_page = 10;
+
+            //model.page = 1;
+
+
+            // Get jobs
+
+            JobSearchResponseModel resp = await sdk.Jobs.Search(model);'
+          name: .NET
+        - language: java
+          code: "// Instantiate Client\nNeverbounceClient neverbounceClient = NeverbounceClientFactory.create(apiKey);\n\
+            \n// Search for jobs\nJobsSearchResponse jobsSearchResponse = neverbounceClient\n        .prepareJobsSearchRequest()\n\
+            \        .withJobId(jobId)\n        .build()\n        .execute();"
+        samples-languages:
+        - curl
+        - php
+        - javascript
+        - python
+        - go
+        - ruby
+        - csharp
+        - java
       tags:
       - Jobs
-      summary: Download completed job results as CSV
+  /jobs/create:
+    post:
+      summary: /create
+      description: ''
+      operationId: jobs-create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - input_location
+              - input
+              properties:
+                input_location:
+                  type: string
+                  description: The type of input being supplied. Accepted values are "remote_url" and
+                    "supplied".
+                input:
+                  type: string
+                  description: The input to be verified
+                  format: json
+                auto_parse:
+                  type: boolean
+                  description: 'Should we begin parsing the job immediately? (default: false)'
+                  default: false
+                auto_start:
+                  type: boolean
+                  description: 'Should we run the job immediately after being parsed? (default: false)'
+                  default: false
+                run_sample:
+                  type: boolean
+                  description: 'Should this job be run as a sample? (default: false)'
+                  default: false
+                filename:
+                  type: string
+                  description: This will be what's displayed in the dashboard when viewing this job
+                request_meta_data:
+                  type: object
+                  description: Miscellanious request meta data
+                  properties:
+                    leverage_historical_data:
+                      type: boolean
+                      description: Control historical data usage, set to false to use real-time only verification
+                      default: true
+                allow_manual_review:
+                  type: boolean
+                  description: Denotes whether or not the job should be allowed to fall into manual review
+                  default: false
+                callback_url:
+                  type: string
+                  description: An optional URL that we should send events to during the lifecycle of the
+                    job
+                callback_headers:
+                  type: string
+                  description: An optional array of headers that should be included when sending events
+                    to the callback_url
+                  format: json
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"status\": \"success\",\n  \"job_id\": 150970,\n  \"execution_time\":\
+                    \ 712\n}"
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  job_id:
+                    type: integer
+                    example: 150970
+                    default: 0
+                  execution_time:
+                    type: integer
+                    example: 712
+                    default: 0
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      x-readme:
+        code-samples:
+        - language: curl
+          code: "# x-www-form-urlencoded request w/ remote_url input\ncurl --request POST\\\n  --url https://api.neverbounce.com/v4.2/jobs/create\\\
+            \n  --data key={api_key}\\\n  --data input_location='remote_url'\\\n  --data filename='SampleNeverBounceAPI.csv'\\\
+            \n  --data auto_parse=true\\\n  --data auto_start=true\\\n  --data allow_manual_review=false\\\
+            \n  --data input='https://mydomain.com/my_file.csv'\\\n  --data callback_url='https://mydomain.com/callbacks/neverbounce'\\\
+            \n  --data 'callback_headers[X-My-Token]=123abc'"
+          name: cURL Remote URL
+        - language: curl
+          code: "# x-www-form-urlencoded request w/ supplied data\ncurl --request POST\\\n  --url https://api.neverbounce.com/v4.2/jobs/create\\\
+            \n  --data key={api_key}\\\n  --data input_location='supplied'\\\n  --data filename='SampleNeverBounceAPI.csv'\\\
+            \n  --data auto_parse=true\\\n  --data auto_start=true\\\n  --data allow_manual_review=false\\\
+            \n  --data 'input[0][0]=support%40neverbounce.com'\\\n  --data 'input[0][1]=Fred%20McValid'\\\
+            \n  --data 'input[1][0]=invalid%40neverbounce.com'\\\n  --data 'input[1][1]=Bob%20McInvalid'\n\
+            \  --data callback_url='https://mydomain.com/callbacks/neverbounce'\\\n  --data 'callback_headers[X-My-Token]=123abc'\n\
+            \  \n# JSON encoded request w/ supplied data\ncurl --request POST\\\n  --header \"Content-Type:\
+            \ application/json\"\\\n  --url https://api.neverbounce.com/v4.2/jobs/create\\\n  --data '{\n\
+            \    \"key\": {api_key},\n    \"input_location\": \"supplied\",\n    \"filename\": \"SampleNeverBounceAPI.csv\"\
+            ,\n    \"auto_start\": true,\n    \"auto_parse\": true,\n    \"allow_manual_review\": false,\n\
+            \    \"input\": [\n        [\n            \"support@neverbounce.com\",\n            \"Fred\
+            \ McValid\"\n        ],\n        [\n            \"invalid@neverbounce.com\",\n           \
+            \ \"Bob McInvalid\"\n        ]\n    ],\n    \"callback_url\": \"https://mydomain.com/callbacks/neverbounce\"\
+            ,\n    \"callback_headers\": {\n    \t\"X-My-Token\": \"123abc\"\n    }\n}'"
+          name: cURL Supplied Data
+        - language: php
+          code: "<?php\n\n// Set API key\n\\NeverBounce\\Auth::setApiKey($api_key);\n\n// Build json\n\
+            $arr = [\n    [\n        'support@neverbounce.com',\n        'Fred McValid'\n    ],\n    [\n\
+            \        'invalid@neverbounce.com',\n        'Bob McInvalid'\n    ]\n];\n\n// Make a new job\
+            \ with the supplied data\n$job = \\NeverBounce\\Jobs::create(\n  $arr, // input\n  \\NeverBounce\\\
+            Jobs::SUPPLIED_INPUT, // Either `supplied` or `remote_url`\n  'SampleNeverBounceAPI.csv',\
+            \ // Friendly name that can be used to identify job\n  false, // Run as sample\n  true, //\
+            \ Auto parse\n  true, // Auto start,\n  false, // Allow manual review\n  null, // Callback\
+            \ URL\n  null // Callback Headers\n);\n"
+        - language: javascript
+          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\n\
+            \n// Verify a list of emails\nclient.jobs.create(\n    [\n        {\n            'id': '12345',\n\
+            \            'email': 'support@neverbounce.com',\n            'name': 'Fred McValid'\n   \
+            \     },\n        {\n            'id': '12346',\n            'email': 'invalid@neverbounce.com',\n\
+            \            'name': 'Bob McInvalid'\n        }\n    ],\n    'supplied', // Either `supplied`\
+            \ or `remote_url`\n    'Created from Array.csv', // Friendly name that can be used to identify\
+            \ job\n  \tfalse, // Run sample\n  \ttrue, // Auto parse\n    true // Auto run,\n    false,\
+            \ // Allow manual review\n    null, // Callback URL\n    null // Callback Headers\n).then(\n\
+            \    resp => // Handle success response\n    err => // Handle error response\n);"
+          name: NodeJs
+        - language: python
+          code: "import neverbounce_sdk\n\n# Create sdk client\nclient = neverbounce_sdk.client(api_key='api_key')\n\
+            \n# Create array of data\ninputData = [\n  {\n    'id': '12345',\n    'email': 'support@neverbounce.com',\n\
+            \    'name': 'Fred McValid'\n  },\n  {\n    'id': '12346',\n    'email': 'invalid@neverbounce.com',\n\
+            \    'name': 'Bob McInvalid'\n  }\n]\n\n# Create Job\nresp = client.jobs_create(\n  input=inputData,\n\
+            \  filename=\"Created from Python Wrapper.csv\",\n  # auto_parse=True,\n  # auto_start=True,\n\
+            \  # as_sample=False,\n  # from_url=False,\n  # allow_manual_review=None,\n  # callback_url=None\n\
+            \  # callback_headers=None\n)"
+        - language: go
+          code: "// Instantiate wrapper\nclient := neverbounce.New(\"api_key\")\n\n// Build data map\n\
+            createData := map[int]interface{}{}\ncreateData[0] = map[string]interface{}{\n  \"id\":  \
+            \  12345,\n  \"email\": \"support@neverbounce.com\",\n  \"name\":  \"Bob McValid\",\n}\ncreateData[1]\
+            \ = map[string]interface{}{\n  \"id\":    12346,\n  \"email\": \"invalid@neverbounce.com\"\
+            ,\n  \"name\":  \"Fred McInvalid\",\n}\n\n// Create a job from supplied data\njobInfo, err\
+            \ := client.Jobs.CreateFromSuppliedData(&nbModels.JobsCreateSuppliedDataRequestModel{\n  SuppliedData:\
+            \ createData,\n  AutoParse:    false,\n  AutoRun:      false,\n  RunSample:    false,\n  FileName:\
+            \     \"Created from Golang.csv\",\n  AllowManualReview: false,\n  // CallbackURL: string\n\
+            \  // CallbackHeaders: map[string]interface{}\n})\nif err != nil {\n  panic(err)\n}\n\n//\
+            \ Create a job from a remote URL\njobInfo, err := client.Jobs.CreateFromRemoteURL(&nbModels.JobsCreateRemoteURLRequestModel{\n\
+            \  RemoteURL: \"https://example.com/file.csv\",\n  AutoParse: true,\n  AutoRun:   false,\n\
+            \  RunSample: false,\n  FileName:  \"Created from Golang.csv\",\n  AllowManualReview: false,\n\
+            \  // CallbackURL: string\n  // CallbackHeaders: map[string]interface{}\n})\nif err != nil\
+            \ {\n  panic(err)\n}"
+        - language: ruby
+          code: "# Instantiate API client\nclient = NeverBounce::API::Client.new(api_key: \"api_key\"\
+            )\n\n# Create job with supplied input\nresp = client.jobs_create(\n  supplied_input: [\n \
+            \   [\"alice@isp.com\", \"Alice Roberts\"], \n    [\"bob.smith@gmail.com\", \"Bob Smith\"\
+            ]\n  ]\n)\n\n# Create job with remote file\nresp = client.jobs_create(remote_input: \"http://example.com/emails.csv\"\
+            , filename: \"emails.csv\")"
+        - language: csharp
+          code: "// Create SDK object\nvar sdk = new NeverBounceSdk(\"api_key\");\n\n/**\n * Create a\
+            \ job using supplied data\n */\n\n// Create supplied data model\nvar model = new JobCreateSuppliedDataRequestModel();\n\
+            model.filename = \"Created From dotNET.csv\";\nmodel.auto_parse = true;\nmodel.auto_start\
+            \ = false;\nmodel.input = new List<object>();\nmodel.input.Add(new {id = \"3\", email = \"\
+            support@neverbounce.com\", name = \"Fred McValid\"});\nmodel.input.Add(new {id = \"4\", email\
+            \ = \"invalid@neverbounce.com\", name = \"Bob McInvalid\"});\nmodel.allow_manual_review =\
+            \ false;\n//model.callback_url = \"https://example.com/callback/neverbounce\";\n//model.callback_headers\
+            \ = Dictionary<string, string>\n\n// Create job from supplied data\nJobCreateResponseModel\
+            \ resp = await sdk.Jobs.CreateFromSuppliedData(model);\n\n/**\n * Create a job using a remote\
+            \ url\n */\n\n// Create remote url model\nvar model2 = new JobCreateRemoteUrlRequestModel();\n\
+            model.filename = \"Created From dotNET.csv\";\nmodel.auto_parse = true;\nmodel.auto_start\
+            \ = false;\nmodel.input = \"https://example.com/file.csv\";\nmodel.allow_manual_review = false;\n\
+            //model.callback_url = \"https://example.com/callback/neverbounce\";\n//model.callback_headers\
+            \ = Dictionary<string, string>\n\n// Create job from remote url\nJobCreateResponseModel resp2\
+            \ = await sdk.Jobs.CreateFromRemoteUrl(model);"
+          name: .NET
+        samples-languages:
+        - curl
+        - php
+        - javascript
+        - python
+        - go
+        - ruby
+        - csharp
+      tags:
+      - Jobs
+  /jobs/parse:
+    post:
+      summary: /parse
+      description: ''
+      operationId: jobs-parse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - job_id
+              properties:
+                job_id:
+                  type: integer
+                  description: The id of the job to parse
+                  format: int32
+                auto_start:
+                  type: boolean
+                  description: 'Should the job start processing immediately after it''s parsed? (default:
+                    false)'
+                  default: false
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"status\": \"success\",\n  \"queue_id\": \"NB-PQ-59246392E9E5D\",\n  \"\
+                    execution_time\": 712\n}"
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  queue_id:
+                    type: string
+                    example: NB-PQ-59246392E9E5D
+                  execution_time:
+                    type: integer
+                    example: 712
+                    default: 0
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      x-readme:
+        code-samples:
+        - language: curl
+          code: "curl --request POST\\\n  --url https://api.neverbounce.com/v4.2/jobs/parse\\\n  --data\
+            \ key={api_key}\\\n  --data job_id={job_id}"
+          name: cURL
+        - language: php
+          code: "<?php\n\n// Set API key\n\\NeverBounce\\Auth::setApiKey($api_key);\n\n// Make a new job\
+            \ with the supplied data\n$job = \\NeverBounce\\Jobs::parse(\n  $job_id,\n  //false // Auto\
+            \ start\n);"
+        - language: javascript
+          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\n\
+            \n// Parse a job\nclient.jobs.parse(\n  jobId,\n  //false // Auto start\n).then(\n    resp\
+            \ => // Handle success response\n    err => // Handle error response\n);"
+          name: NodeJs
+        - language: python
+          code: "import neverbounce_sdk\n\n# Create sdk client\nclient = neverbounce_sdk.client(api_key='api_key')\n\
+            \n# Parse job\nresp = client.jobs_parse(\n  job_id=289022,\n  #auto_start=False\n)"
+        - language: go
+          code: "// Instantiate wrapper\nclient := neverbounce.New(\"api_key\")\n\n// Parse a job\nparseInfo,\
+            \ err := client.Jobs.Parse(&nbModels.JobsParseRequestModel{\n  JobID: 296050,\n//  AutoStart:\
+            \ false,\n})"
+        - language: ruby
+          code: '# Instantiate API client
+
+            client = NeverBounce::API::Client.new(api_key: "api_key")
+
+
+            # Parse job
+
+            resp = client.jobs_parse(job_id: 123)'
+        - language: csharp
+          code: '// Create SDK object
+
+            var sdk = new NeverBounceSdk("api_key");
+
+
+            // Create parse job model
+
+            var model = new JobParseRequestModel();
+
+            model.job_id = 290561;
+
+            //model.auto_start = false;
+
+
+            // Parse job
+
+            JobParseResponseModel resp = await sdk.Jobs.Parse(model);'
+          name: .NET
+        samples-languages:
+        - curl
+        - php
+        - javascript
+        - python
+        - go
+        - ruby
+        - csharp
+      tags:
+      - Jobs
+  /jobs/start:
+    post:
+      summary: /start
+      description: ''
+      operationId: jobs-start
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - job_id
+              properties:
+                job_id:
+                  type: integer
+                  description: The id of the job to start
+                  format: int32
+                run_sample:
+                  type: boolean
+                  description: 'Should this job be run as a sample? (default: false)'
+                  default: false
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"status\": \"success\",\n  \"queue_id\": \"NB-PQ-59246392E9E5D\",\n  \"\
+                    execution_time\": 712\n}"
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  queue_id:
+                    type: string
+                    example: NB-PQ-59246392E9E5D
+                  execution_time:
+                    type: integer
+                    example: 712
+                    default: 0
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      x-readme:
+        code-samples:
+        - language: curl
+          code: "curl --request POST\\\n  --url https://api.neverbounce.com/v4.2/jobs/start\\\n  --data\
+            \ key={api_key}\\\n  --data job_id={job_id}\n  --data allow_manual_review=false"
+          name: cURL
+        - language: php
+          code: '<?php
+
+
+            // Set API key
+
+            \NeverBounce\Auth::setApiKey($api_key);
+
+
+            // Start a job that has been parsed
+
+            $job = \NeverBounce\Jobs::start($job_id);'
+        - language: javascript
+          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\n\
+            \n// Start a job\nclient.jobs.start(jobId).then(\n    resp => // Handle successful response\n\
+            \    err => // Handle error response\n);"
+          name: NodeJs
+        - language: python
+          code: 'import neverbounce_sdk
+
+
+            # Create sdk client
+
+            client = neverbounce_sdk.client(api_key=''api_key'')
+
+
+            # Start job
+
+            resp = client.jobs_start(job_id=289022)'
+        - language: go
+          code: "// Instantiate wrapper\nclient = neverbounce.New(\"api_key\")\n\n// Start a job\nstartInfo,\
+            \ err := client.Jobs.Start(&nbModels.JobsStartRequestModel{\n  JobID: 296050,\n//  RunSample:\
+            \ false,\n})"
+        - language: ruby
+          code: '# Instantiate API client
+
+            client = NeverBounce::API::Client.new(api_key: "api_key")
+
+
+            # Start a job
+
+            resp = client.client.jobs_start(job_id: 123)'
+        - language: csharp
+          code: '// Create SDK object
+
+            var sdk = new NeverBounceSdk("api_key");
+
+
+            // Create start job model
+
+            var model = new JobStartRequestModel();
+
+            model.job_id = 290561;
+
+            //model.run_sample = true;
+
+
+            // Start job
+
+            JobStartResponseModel resp = await sdk.Jobs.Start(model);'
+          name: .NET
+        samples-languages:
+        - curl
+        - php
+        - javascript
+        - python
+        - go
+        - ruby
+        - csharp
+      tags:
+      - Jobs
+  /jobs/status:
+    get:
+      summary: /status
+      description: ''
+      operationId: jobs-status
       parameters:
-      - name: key
-        in: query
-        required: false
-        schema:
-          type: string
       - name: job_id
         in: query
+        description: The id of the job to check
         required: true
         schema:
           type: integer
-      - name: valids
-        in: query
-        required: false
-        schema:
-          type: integer
-          enum:
-          - 0
-          - 1
-      - name: invalids
-        in: query
-        required: false
-        schema:
-          type: integer
-          enum:
-          - 0
-          - 1
-      - name: disposables
-        in: query
-        required: false
-        schema:
-          type: integer
-          enum:
-          - 0
-          - 1
-      - name: catchalls
-        in: query
-        required: false
-        schema:
-          type: integer
-          enum:
-          - 0
-          - 1
-      - name: unknowns
-        in: query
-        required: false
-        schema:
-          type: integer
-          enum:
-          - 0
-          - 1
+          format: int32
       responses:
         '200':
-          description: CSV download
+          description: '200'
           content:
-            text/csv: {}
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"status\": \"success\",\n  \"id\": 277461,\n  \"filename\": \"Created\
+                    \ from Array.csv\",\n  \"created_at\": \"2017-07-25 14:52:27\",\n  \"started_at\"\
+                    : \"2017-07-25 14:52:40\",\n  \"finished_at\": \"2017-07-25 14:53:06\",\n  \"failure_reason\"\
+                    : null,\n  \"total\": {\n    \"records\": 2,\n    \"billable\": 2,\n    \"processed\"\
+                    : 2,\n    \"valid\": 0,\n    \"invalid\": 2,\n    \"catchall\": 0,\n    \"disposable\"\
+                    : 0,\n    \"unknown\": 0,\n    \"duplicates\": 0,\n    \"bad_syntax\": 0\n  },\n \
+                    \ \"bounce_estimate\": 0,\n  \"percent_complete\": 100,\n  \"job_status\": \"complete\"\
+                    ,\n  \"execution_time\": 322\n}"
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  id:
+                    type: integer
+                    example: 277461
+                    default: 0
+                  filename:
+                    type: string
+                    example: Created from Array.csv
+                  created_at:
+                    type: string
+                    example: '2017-07-25 14:52:27'
+                  started_at:
+                    type: string
+                    example: '2017-07-25 14:52:40'
+                  finished_at:
+                    type: string
+                    example: '2017-07-25 14:53:06'
+                  failure_reason: {}
+                  total:
+                    type: object
+                    properties:
+                      records:
+                        type: integer
+                        example: 2
+                        default: 0
+                      billable:
+                        type: integer
+                        example: 2
+                        default: 0
+                      processed:
+                        type: integer
+                        example: 2
+                        default: 0
+                      valid:
+                        type: integer
+                        example: 0
+                        default: 0
+                      invalid:
+                        type: integer
+                        example: 2
+                        default: 0
+                      catchall:
+                        type: integer
+                        example: 0
+                        default: 0
+                      disposable:
+                        type: integer
+                        example: 0
+                        default: 0
+                      unknown:
+                        type: integer
+                        example: 0
+                        default: 0
+                      duplicates:
+                        type: integer
+                        example: 0
+                        default: 0
+                      bad_syntax:
+                        type: integer
+                        example: 0
+                        default: 0
+                  bounce_estimate:
+                    type: integer
+                    example: 0
+                    default: 0
+                  percent_complete:
+                    type: integer
+                    example: 100
+                    default: 0
+                  job_status:
+                    type: string
+                    example: complete
+                  execution_time:
+                    type: integer
+                    example: 322
+                    default: 0
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      x-readme:
+        code-samples:
+        - language: curl
+          code: "curl --request GET\\\n  --url 'https://api.neverbounce.com/v4.2/jobs/status?key={api_key}&job_id={job_id}'"
+        - language: php
+          code: '<?php
+
+
+            // Set API key
+
+            \NeverBounce\Auth::setApiKey($api_key);
+
+
+            // Get the details about the job
+
+            $job = \NeverBounce\Jobs::status($job_id);'
+        - language: javascript
+          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\n\
+            \n// Get the job status\nclient.jobs.status(jobId).then(\n    resp => // Handle successful\
+            \ response,\n    err => // Handle error response\n);"
+          name: NodeJs
+        - language: python
+          code: 'import neverbounce_sdk
+
+
+            # Create sdk client
+
+            client = neverbounce_sdk.client(api_key=''api_key'')
+
+
+            # Get job status
+
+            resp = client.jobs_status(job_id=289022)'
+        - language: go
+          code: "// Instantiate wrapper\nclient := neverbounce.New(\"api_key\")\n\n// Query a job's status\n\
+            statusInfo, err := client.Jobs.Status(&nbModels.JobsStatusRequestModel{\n  JobID: 296050,\n\
+            })"
+        - language: ruby
+          code: '# Instantiate API client
+
+            client = NeverBounce::API::Client.new(api_key: "api_key")
+
+
+            # Parse job
+
+            resp = client.jobs_status(job_id: 123)'
+        - language: csharp
+          code: '// Create SDK object
+
+            var sdk = new NeverBounceSdk("api_key");
+
+
+            // Create job status model
+
+            var model = new JobStatusRequestModel();
+
+            model.job_id = 290561;
+
+
+            // Query job status
+
+            JobStatusResponseModel resp = await sdk.Jobs.Status(model);'
+          name: .NET
+        samples-languages:
+        - curl
+        - php
+        - javascript
+        - python
+        - go
+        - ruby
+        - csharp
+      tags:
+      - Jobs
+  /jobs/results:
+    get:
+      summary: /results
+      description: ''
+      operationId: jobs-results
+      parameters:
+      - name: job_id
+        in: query
+        description: The id of the job to retrieve results for
+        required: true
+        schema:
+          type: integer
+          format: int32
+      - name: page
+        in: query
+        description: The page to return the results from
+        schema:
+          type: integer
+          format: int32
+          default: 1
+      - name: items_per_page
+        in: query
+        description: The number of results to be returned, between 1 and 1000
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"status\": \"success\",\n  \"total_results\": 3,\n  \"total_pages\": 1,\n\
+                    \  \"query\": {\n    \"job_id\": 251319,\n    \"valids\": 1,\n    \"invalids\": 1,\n\
+                    \    \"disposables\": 1,\n    \"catchalls\": 1,\n    \"unknowns\": 1,\n    \"page\"\
+                    : 0,\n    \"items_per_page\": 10\n  },\n  \"results\": [\n    {\n      \"data\": {\n\
+                    \        \"email\": \"email\",\n        \"id\": \"id\",\n        \"name\": \"name\"\
+                    \n      },\n      \"verification\": {\n        \"result\": \"invalid\",\n        \"\
+                    flags\": [],\n        \"suggested_correction\": \"\",\n        \"address_info\": {\n\
+                    \          \"original_email\": \"email\",\n          \"normalized_email\": \"\",\n\
+                    \          \"addr\": \"\",\n          \"alias\": \"\",\n          \"host\": \"\",\n\
+                    \          \"fqdn\": \"\",\n          \"domain\": \"\",\n          \"subdomain\":\
+                    \ \"\",\n          \"tld\": \"\"\n        }\n      }\n    },\n    {\n      \"data\"\
+                    : {\n        \"email\": \"support@neverbounce.com\",\n        \"id\": \"12345\",\n\
+                    \        \"name\": \"Fred McValid\"\n      },\n      \"verification\": {\n       \
+                    \ \"result\": \"valid\",\n        \"flags\": [\n          \"smtp_connectable\",\n\
+                    \          \"has_dns\",\n          \"has_dns_mx\",\n          \"role_account\"\n \
+                    \       ],\n        \"suggested_correction\": \"\",\n        \"address_info\": {\n\
+                    \          \"original_email\": \"support@neverbounce.com\",\n          \"normalized_email\"\
+                    : \"support@neverbounce.com\",\n          \"addr\": \"support\",\n          \"alias\"\
+                    : \"\",\n          \"host\": \"neverbounce.com\",\n          \"fqdn\": \"neverbounce.com\"\
+                    ,\n          \"domain\": \"neverbounce\",\n          \"subdomain\": \"\",\n      \
+                    \    \"tld\": \"com\"\n        }\n      }\n    },\n    {\n      \"data\": {\n    \
+                    \    \"email\": \"invalid@neverbounce.com\",\n        \"id\": \"12346\",\n       \
+                    \ \"name\": \"Bob McInvalid\"\n      },\n      \"verification\": {\n        \"result\"\
+                    : \"invalid\",\n        \"flags\": [\n          \"smtp_connectable\",\n          \"\
+                    has_dns\",\n          \"has_dns_mx\"\n        ],\n        \"suggested_correction\"\
+                    : \"\",\n        \"address_info\": {\n          \"original_email\": \"invalid@neverbounce.com\"\
+                    ,\n          \"normalized_email\": \"invalid@neverbounce.com\",\n          \"addr\"\
+                    : \"invalid\",\n          \"alias\": \"\",\n          \"host\": \"neverbounce.com\"\
+                    ,\n          \"fqdn\": \"neverbounce.com\",\n          \"domain\": \"neverbounce\"\
+                    ,\n          \"subdomain\": \"\",\n          \"tld\": \"com\"\n        }\n      }\n\
+                    \    }\n  ],\n  \"execution_time\": 55\n}"
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  total_results:
+                    type: integer
+                    example: 3
+                    default: 0
+                  total_pages:
+                    type: integer
+                    example: 1
+                    default: 0
+                  query:
+                    type: object
+                    properties:
+                      job_id:
+                        type: integer
+                        example: 251319
+                        default: 0
+                      valids:
+                        type: integer
+                        example: 1
+                        default: 0
+                      invalids:
+                        type: integer
+                        example: 1
+                        default: 0
+                      disposables:
+                        type: integer
+                        example: 1
+                        default: 0
+                      catchalls:
+                        type: integer
+                        example: 1
+                        default: 0
+                      unknowns:
+                        type: integer
+                        example: 1
+                        default: 0
+                      page:
+                        type: integer
+                        example: 0
+                        default: 0
+                      items_per_page:
+                        type: integer
+                        example: 10
+                        default: 0
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        data:
+                          type: object
+                          properties:
+                            email:
+                              type: string
+                              example: email
+                            id:
+                              type: string
+                              example: id
+                            name:
+                              type: string
+                              example: name
+                        verification:
+                          type: object
+                          properties:
+                            result:
+                              type: string
+                              example: invalid
+                            flags:
+                              type: array
+                            suggested_correction:
+                              type: string
+                              example: ''
+                            address_info:
+                              type: object
+                              properties:
+                                original_email:
+                                  type: string
+                                  example: email
+                                normalized_email:
+                                  type: string
+                                  example: ''
+                                addr:
+                                  type: string
+                                  example: ''
+                                alias:
+                                  type: string
+                                  example: ''
+                                host:
+                                  type: string
+                                  example: ''
+                                fqdn:
+                                  type: string
+                                  example: ''
+                                domain:
+                                  type: string
+                                  example: ''
+                                subdomain:
+                                  type: string
+                                  example: ''
+                                tld:
+                                  type: string
+                                  example: ''
+                  execution_time:
+                    type: integer
+                    example: 55
+                    default: 0
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      x-readme:
+        code-samples:
+        - language: curl
+          code: "curl --request GET\\\n  --url 'https://api.neverbounce.com/v4.2/jobs/results?key={api_key}&job_id={job_id}'"
+        - language: php
+          code: "<?php\n\n// Set API key\n\\NeverBounce\\Auth::setApiKey($api_key);\n\n$query = [\n  //'items_per_page'\
+            \ => 10,\n  //'page' => 1,\n];\n\n// Get the results from the job\n$job = \\NeverBounce\\\
+            Jobs::results($job_id, $query);"
+        - language: javascript
+          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\n\
+            \n// Get the job results\nclient.jobs.results(jobId, {\n//    'page': 1, // Page to start\
+            \ from\n//    'items_per_page': 10, // Number of items per page\n}).then(\n    resp => //\
+            \ Handle successful response,\n    err => // Handle error response\n);"
+          name: NodeJs
+        - language: python
+          code: "import neverbounce_sdk\n\n# Create sdk client\nclient = neverbounce_sdk.client(api_key='api_key')\n\
+            \n# Get job's results\njobs = client.jobs_results(\n    job_id=289022\n    # page=1,  # Page\
+            \ to start from\n    # items_per_page=10,  # Number of items per page\n)\n\n# Iterate through\
+            \ jobs\nfor job in jobs:\n    print(job)"
+        - language: go
+          code: "// Instantiate wrapper\nclient := neverbounce.New(\"api_key\")\n\n// Get the results\
+            \ for a job\nresultsInfo, err := client.Jobs.Results(&nbModels.JobsResultsRequestModel{\n\
+            \  JobID: 296050,\n  //ItemsPerPage: 10,\n  //Page: 1,\n})"
+        - language: ruby
+          code: '# Instantiate API client
+
+            client = NeverBounce::API::Client.new(api_key: "api_key")
+
+
+            # Download job results
+
+            resp = client.jobs_results(job_id: 123, page: 1, per_page: 20)
+
+
+            # Process items:
+
+            resp.results.items.each do |item| ...'
+        - language: csharp
+          code: '// Create SDK object
+
+            var sdk = new NeverBounceSdk("api_key");
+
+
+            // Create job results model
+
+            var model = new JobResultsRequestModel();
+
+            model.job_id = 290561;
+
+            //model.items_per_page = 10;
+
+            //model.page = 1;
+
+
+            // Get job''s results
+
+            JobResultsResponseModel resp = await sdk.Jobs.Results(model);'
+          name: .NET
+        samples-languages:
+        - curl
+        - php
+        - javascript
+        - python
+        - go
+        - ruby
+        - csharp
+      tags:
+      - Jobs
+  /jobs/delete:
+    post:
+      summary: /delete
+      description: ''
+      operationId: jobs-delete
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - job_id
+              properties:
+                job_id:
+                  type: integer
+                  description: The id of the job to delete
+                  format: int32
+      responses:
+        '200':
+          description: '200'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: "{\n  \"status\": \"success\",\n  \"execution_time\": 57\n}"
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  execution_time:
+                    type: integer
+                    example: 57
+                    default: 0
+        '400':
+          description: '400'
+          content:
+            application/json:
+              examples:
+                Result:
+                  value: '{}'
+              schema:
+                type: object
+                properties: {}
+      deprecated: false
+      x-readme:
+        code-samples:
+        - language: curl
+          code: "curl --request POST\\\n  --url https://api.neverbounce.com/v4.2/jobs/delete\\\n  --data\
+            \ key={api_key}\\\n  --data job_id={job_id}"
+          name: cURL
+        - language: php
+          code: '<?php
+
+
+            // Set API key
+
+            \NeverBounce\Auth::setApiKey($api_key);
+
+
+            // Delete a job
+
+            $job = \NeverBounce\Jobs::delete($job_id);'
+        - language: javascript
+          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\n\
+            \n// Delete the job\nclient.jobs.delete(jobId).then(\n    resp => // Handle successful response,\n\
+            \    err => // Handle errors\n);"
+          name: NodeJs
+        - language: python
+          code: 'import neverbounce_sdk
+
+
+            # Create sdk client
+
+            client = neverbounce_sdk.client(api_key=''api_key'')
+
+
+            # Delete job
+
+            resp = client.jobs_delete(job_id=289022)
+
+            '
+        - language: go
+          code: "// Instantiate wrapper\nclient := neverbounce.New(\"api_key\")\n\n// Delete a job\ndeleteInfo,\
+            \ err := client.Jobs.Delete(&nbModels.JobsDeleteRequestModel{\n  JobID: 296050,\n})"
+        - language: ruby
+          code: '# Instantiate API client
+
+            client = NeverBounce::API::Client.new(api_key: "api_key")
+
+
+            # Delete job
+
+            resp = client.jobs_delete(job_id: 123)'
+        - language: csharp
+          code: '// Create SDK object
+
+            var sdk = new NeverBounceSdk("api_key");
+
+
+            // Create job delete model
+
+            var model = new JobDeleteRequestModel();
+
+            model.job_id = 290561;
+
+
+            // Delete job
+
+            JobDeleteRequestModel resp = await sdk.Jobs.Delete(model);'
+          name: .NET
+        samples-languages:
+        - curl
+        - php
+        - javascript
+        - python
+        - go
+        - ruby
+        - csharp
+      tags:
+      - Jobs
 components:
-  schemas:
-    JobCreateResponse:
-      type: object
-      properties:
-        status:
-          type: string
-        job_id:
-          type: integer
-        execution_time:
-          type: integer
-    JobStatusResponse:
-      type: object
-      properties:
-        status:
-          type: string
-        id:
-          type: integer
-        job_status:
-          type: string
-          enum:
-          - under_review
-          - queued
-          - failed
-          - complete
-          - running
-          - parsing
-          - waiting
-          - waiting_analyzed
-          - uploading
-        total:
-          type: object
-          additionalProperties: true
-        bounce_estimate:
-          type: number
-        percent_complete:
-          type: number
-        created_at:
-          type: string
-          format: date-time
-    JobCreateRequest:
-      type: object
-      required:
-      - input
-      - input_location
-      properties:
-        key:
-          type: string
-        input:
-          description: Either a remote URL or an inline list of email rows
-          oneOf:
-          - type: string
-          - type: array
-            items:
-              type: array
-              items:
-                type: string
-        input_location:
-          type: string
-          enum:
-          - remote_url
-          - supplied
-        filename:
-          type: string
-        auto_parse:
-          type: boolean
-        auto_start:
-          type: boolean
-        run_sample:
-          type: boolean
-        allow_manual_review:
-          type: boolean
-        request_meta_data:
-          type: object
-          properties:
-            leverage_historical_data:
-              type: integer
-              enum:
-              - 0
-              - 1
   securitySchemes:
-    ApiKeyQuery:
+    sec0:
       type: apiKey
       in: query
       name: key
-    BearerAuth:
-      type: http
-      scheme: bearer
-externalDocs:
-  description: NeverBounce API getting started
-  url: https://developers.neverbounce.com/docs/api-getting-started

@@ -1,0 +1,58 @@
+generated: '2026-08-13'
+method: searched
+source: https://developers.neverbounce.com/changelog
+url: https://developers.neverbounce.com/changelog
+scheme: api-version
+current_version: '4.2'
+dated: false
+note: >-
+  NeverBounce publishes a changelog, but it is versioned rather than dated — entries are
+  titled by API version and the hub exposes no publication date on them. Only three entries
+  exist, the newest being version 4.2. The `updatedAt` stamp on every reference page and on
+  the published OpenAPI definition is 2025-06-16, which is the last time the developer hub
+  was touched at all.
+entries:
+- version: '4.2'
+  date: null
+  url: https://developers.neverbounce.com/changelog/version-42
+  breaking: true
+  highlights:
+  - >-
+    Job Callbacks introduced — applications can now react to job status changes over
+    webhooks instead of polling /jobs/status.
+  - >-
+    [Breaking] The `acedemic_host` verification flag was renamed to `academic_host`.
+  - >-
+    Added `failure_reason` to the /jobs/status response, populated when a job enters a
+    `failed` status.
+  - >-
+    API jobs are no longer eligible for manual review by default; manual review now
+    requires opt-in at job creation.
+  additions:
+  - job callbacks
+  - failure_reason
+- version: '4.1'
+  date: null
+  url: https://developers.neverbounce.com/changelog/version-41
+  breaking: false
+  highlights:
+  - >-
+    Hybrid — real-time verification unified with historical intelligence from third-party
+    data points — became the algorithm behind all verifications, with no client change
+    required.
+  - >-
+    New `historical_response` verification flag on /single/check and /jobs/results
+    indicating a result was produced from historical data.
+  - >-
+    New `request_meta_data[leverage_historical_data]` parameter on /single/check and
+    /jobs/create to force classic real-time-only verification.
+  additions:
+  - historical_response flag
+  - request_meta_data.leverage_historical_data
+- version: null
+  title: Welcome to NeverBounce
+  date: null
+  url: https://developers.neverbounce.com/changelog/welcome-to-neverbounce
+  breaking: false
+  highlights:
+  - Launch post for the developer hub.

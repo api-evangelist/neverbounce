@@ -1,21 +1,82 @@
-generated: '2026-07-11'
-method: derived
-source: openapi/neverbounce-openapi.yml
+generated: '2026-08-13'
+method: searched
+source: https://developers.neverbounce.com/reference/authentication
+docs: https://developers.neverbounce.com/reference/authentication
 summary:
   types:
   - apiKey
-  - http
   api_key_in:
   - query
+  - body
+  oauth2: false
+  openid_connect: false
+  mutual_tls: false
 schemes:
-- name: ApiKeyQuery
+- name: sec0
   type: apiKey
   in: query
   parameter: key
+  description: >-
+    Static per-integration API key. V4 keys are prefixed `secret_` followed by 32
+    characters. Created from the dashboard as a "Custom Integration App"
+    (https://app.neverbounce.com/apps/custom-integration/new); the key can be reset from
+    the same app overview page. The published OpenAPI definition declares this scheme as
+    `sec0` (apiKey, in: query, name: key).
   sources:
-  - openapi/neverbounce-openapi.yml
-- name: BearerAuth
-  type: http
-  scheme: bearer
-  sources:
-  - openapi/neverbounce-openapi.yml
+  - openapi/neverbounce-account-api-openapi.yml
+  - openapi/neverbounce-jobs-api-openapi.yml
+  - openapi/neverbounce-poe-api-openapi.yml
+  - openapi/neverbounce-single-api-openapi.yml
+  - https://developers.neverbounce.com/reference/authentication
+key_prefixes:
+- prefix: secret_
+  surface: v4 REST API
+  usage: >-
+    Server-side only. Grants access to account data and consumes verification credits.
+    Accepted in the query string (`?key=`), in an `application/x-www-form-urlencoded`
+    body, or in an `application/json` body.
+  note: >-
+    NeverBounce explicitly warns that the standard API is not usable from a browser — CORS
+    is not enabled — because the key would be exposed client-side.
+- prefix: public_
+  surface: JavaScript widget
+  usage: >-
+    Browser-safe publishable key for the NeverBounce JS widget only. Keys starting with
+    `public_` cannot authenticate the standard API, and `secret_` keys cannot drive the
+    widget.
+  source: https://developers.neverbounce.com/reference/widget-overview
+- prefix: webhook_secret_
+  surface: single/check webhook URLs
+  usage: >-
+    Key embedded in a generated webhook URL (created at
+    https://app.neverbounce.com/apps/webhook/new) so third-party tools can call
+    `/single/check` without code. NeverBounce documents these URLs as sensitive — they
+    carry a live key and must not be used client-side.
+  source: https://developers.neverbounce.com/reference/single-webhooks
+transport:
+  https_only: true
+  interchangeable_verbs: true
+  accepted_content_types:
+  - application/x-www-form-urlencoded
+  - application/json
+  note: >-
+    v4 accepts GET and POST interchangeably; PUT, DELETE, HEAD and OPTIONS are not
+    supported. See https://developers.neverbounce.com/reference/encoding-requests
+failure_modes:
+- status: auth_failure
+  http_status: 200
+  meaning: >-
+    Request could not be authenticated. Most often a legacy V3 username/secret being sent
+    to a V4 endpoint — V3 credentials do not work on V4.
+- status: bad_referrer
+  http_status: 200
+  meaning: >-
+    Request originated from a domain or IP not listed in the app's Trusted Domains
+    (widget and webhook apps).
+notes:
+- >-
+  There is no OAuth 2.0 or OpenID Connect surface. Authentication is a single static API
+  key per integration app, rotated by resetting the key in the dashboard.
+- >-
+  Authentication failures are returned inside a HTTP 200 body via the `status` property,
+  not as a 401 — see errors/neverbounce-problem-types.yml.

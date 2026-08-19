@@ -1,0 +1,123 @@
+generated: '2026-08-13'
+method: searched
+source: https://developers.neverbounce.com/reference/error-handling
+derived_from:
+- openapi/neverbounce-single-api-openapi.yml
+- openapi/neverbounce-jobs-api-openapi.yml
+- openapi/neverbounce-account-api-openapi.yml
+- openapi/neverbounce-poe-api-openapi.yml
+format: proprietary
+rfc9457: false
+content_type: application/json
+envelope:
+  fields:
+  - name: status
+    type: string
+    description: Outcome of the operation. `success` or one of the failure codes below.
+  - name: message
+    type: string
+    description: Human-readable detail, present only on failures.
+  - name: execution_time
+    type: integer
+    description: Milliseconds spent on the request.
+  example: |
+    {
+      "status": "general_failure",
+      "message": "Missing required parameter 'key'",
+      "execution_time": 5
+    }
+  critical_note: >-
+    Application errors are returned with a HTTP 200 status code. A client that branches on
+    the HTTP status alone will treat an auth failure or a throttle as a successful
+    verification. Always read `status` before reading `result`.
+problem_types:
+- code: success
+  http_status: 200
+  title: Request succeeded
+  remediation: null
+- code: general_failure
+  http_status: 200
+  title: Request failed
+  description: >-
+    Something went wrong with the request; the `message` property carries the detail (for
+    example a missing required parameter).
+  remediation: Read `message`, correct the request. Do not blind-retry — the input is wrong.
+- code: auth_failure
+  http_status: 200
+  title: Authentication failed
+  description: >-
+    The request could not be authenticated. The documented common cause is sending legacy
+    V3 credentials (an 8-character username or 12–16 character secret) to a V4 endpoint. V4
+    keys are prefixed `secret_`.
+  remediation: >-
+    Verify the key is a V4 `secret_` key created as a Custom Integration App. `public_`
+    widget keys will never authenticate the standard API.
+- code: temp_unavail
+  http_status: 200
+  title: Temporarily unavailable
+  description: An internal error occurred; typically indicates a partial service interruption.
+  remediation: Retry with backoff and check https://status.neverbounce.com.
+  retryable: true
+- code: throttle_triggered
+  http_status: 200
+  title: Rate limited
+  description: The request was rejected due to rate limiting.
+  remediation: >-
+    Back off and retry shortly, or adjust the application's rate-limit settings in the
+    dashboard. No Retry-After is returned; the caller must choose its own backoff.
+  retryable: true
+- code: bad_referrer
+  http_status: 200
+  title: Untrusted referrer
+  description: >-
+    The referrer for this request is not in the app's Trusted Domains list. Applies to
+    widget and webhook applications.
+  remediation: Add the calling domain or IP to Trusted Domains in the app's dashboard settings.
+http_errors:
+- status: 400
+  title: Bad request
+  description: >-
+    Declared on every operation in the published OpenAPI definition with an empty response
+    schema — NeverBounce documents no body shape for 4xx responses.
+  source: openapi/_original/neverbounce-api.json
+- status: 413
+  title: Entity too large
+  description: >-
+    Returned by /jobs/create when a `supplied_data` payload exceeds the 25MB limit.
+  remediation: >-
+    Split the data into smaller chunks, or switch `input_location` to `remote_url` and let
+    NeverBounce fetch the file.
+  source: https://developers.neverbounce.com/reference/usage-guidelines
+- status: 4xx
+  title: Client error
+  description: Malformed request. NeverBounce advises checking the request for typos.
+  retryable: false
+- status: 5xx
+  title: Server error
+  description: A fault on the NeverBounce side.
+  remediation: Retry the request and check the status page.
+  retryable: true
+sdk_error_types:
+  note: >-
+    The first-party SDKs map the body-level status codes onto language-native exceptions,
+    which is the cleanest confirmation that these six codes are the complete catalog.
+  php: [AuthException, BadReferrerException, ThrottleException, HttpClientException, GeneralException]
+  javascript: [AuthError, BadReferrerException, ThrottleError, GeneralError]
+  python: [AuthFailure, BadReferrer, ThrottleTriggered, GeneralException]
+  go: [ErrorTypeAuthFailure, ErrorTypeBadReferrer, ErrorTypeThrottleTriggered]
+  dotnet: [AuthException, BadReferrerException, ThrottleException, GeneralException]
+  source: https://developers.neverbounce.com/reference/error-handling
+job_failure_reasons:
+  field: failure_reason
+  returned_by: jobs-status
+  note: >-
+    Added in API version 4.2. When a job enters a `failed` status this property carries a
+    reason code. NeverBounce does not publish the enumeration of reason codes, so none are
+    listed here.
+  source: https://developers.neverbounce.com/changelog/version-42
+cors_errors:
+  note: >-
+    A missing Access-Control-Allow-Origin is not a NeverBounce fault — the standard API is
+    deliberately not callable from a browser. Use the JavaScript widget or a server-side
+    proxy.
+  source: https://developers.neverbounce.com/reference/error-handling

@@ -1,0 +1,653 @@
+{
+  "item": [
+    {
+      "id": "a7ebb2a3-7379-4bde-a9e3-b987e69b80fa",
+      "name": "Jobs",
+      "description": {
+        "content": "Bulk list verification jobs",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "82444cb0-2900-4c32-a4c9-01bfb42afca8",
+          "name": "Create a verification job",
+          "request": {
+            "name": "Create a verification job",
+            "description": {
+              "content": "Creates a bulk verification job from either a remote URL containing a CSV/list of emails or from inline supplied data.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "jobs",
+                "create"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"input\": \"<string>\",\n  \"input_location\": \"<string>\",\n  \"key\": \"<string>\",\n  \"filename\": \"<string>\",\n  \"auto_parse\": \"<boolean>\",\n  \"auto_start\": \"<boolean>\",\n  \"run_sample\": \"<boolean>\",\n  \"allow_manual_review\": \"<boolean>\",\n  \"request_meta_data\": {\n    \"leverage_historical_data\": \"<integer>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9c146bf2-8752-4809-a39c-c78e01317f6d",
+              "name": "Job created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "jobs",
+                    "create"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "key",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"input\": \"<string>\",\n  \"input_location\": \"<string>\",\n  \"key\": \"<string>\",\n  \"filename\": \"<string>\",\n  \"auto_parse\": \"<boolean>\",\n  \"auto_start\": \"<boolean>\",\n  \"run_sample\": \"<boolean>\",\n  \"allow_manual_review\": \"<boolean>\",\n  \"request_meta_data\": {\n    \"leverage_historical_data\": \"<integer>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"string\",\n  \"job_id\": 3445,\n  \"execution_time\": 6316\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1a90ee14-60a0-4b2f-87f3-3cacbb92d1b3",
+          "name": "Parse a previously uploaded job",
+          "request": {
+            "name": "Parse a previously uploaded job",
+            "description": {
+              "content": "Begins parsing of an uploaded list to prepare it for verification.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "jobs",
+                "parse"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"job_id\": \"<integer>\",\n  \"key\": \"<string>\",\n  \"auto_start\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fb7b3620-9a34-4d10-a29d-fec2e3ca61c0",
+              "name": "Parse acknowledgement",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "jobs",
+                    "parse"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "key",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"job_id\": \"<integer>\",\n  \"key\": \"<string>\",\n  \"auto_start\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d88bb707-7f10-4e07-b20c-5e441e7f025f",
+          "name": "Start verification of a parsed job",
+          "request": {
+            "name": "Start verification of a parsed job",
+            "description": {},
+            "url": {
+              "path": [
+                "jobs",
+                "start"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"job_id\": \"<integer>\",\n  \"key\": \"<string>\",\n  \"run_sample\": \"<boolean>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "409dcd61-3945-4c49-bb2f-d2050c295e48",
+              "name": "Start acknowledgement",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "jobs",
+                    "start"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "key",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"job_id\": \"<integer>\",\n  \"key\": \"<string>\",\n  \"run_sample\": \"<boolean>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9c197b6e-9f35-40bc-9ae3-b54610711be5",
+          "name": "Get job status",
+          "request": {
+            "name": "Get job status",
+            "description": {},
+            "url": {
+              "path": [
+                "jobs",
+                "status"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "key",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "job_id",
+                  "value": "<integer>",
+                  "description": "(Required) "
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3a08c83e-4fa5-4ed7-8ab7-d5aaaa2de99f",
+              "name": "Job status",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "jobs",
+                    "status"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "key",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "job_id",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "key",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"string\",\n  \"id\": 5956,\n  \"job_status\": \"under_review\",\n  \"total\": {\n    \"key_0\": \"string\",\n    \"key_1\": false,\n    \"key_2\": 7856\n  },\n  \"bounce_estimate\": 2986.3141761357037,\n  \"percent_complete\": 4370.9707107658105,\n  \"created_at\": \"1976-09-15T22:25:58.510Z\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "22ef6e83-9dc2-4ea1-a058-87b9ac23205d",
+          "name": "Get paginated job results",
+          "request": {
+            "name": "Get paginated job results",
+            "description": {},
+            "url": {
+              "path": [
+                "jobs",
+                "results"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "key",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "job_id",
+                  "value": "<integer>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "items_per_page",
+                  "value": "<integer>"
+                }
+              ],
+              "variable": []
+            },
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4c1f9de6-4f29-4e7b-ba2d-6e00ac1ee74a",
+              "name": "Paginated job results",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "jobs",
+                    "results"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "key",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "job_id",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "items_per_page",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "key",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "091c58b1-bc8f-4e7b-882e-f7598c146a7d",
+          "name": "Download completed job results as CSV",
+          "request": {
+            "name": "Download completed job results as CSV",
+            "description": {},
+            "url": {
+              "path": [
+                "jobs",
+                "download"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "key",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "job_id",
+                  "value": "<integer>",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "key": "valids",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "invalids",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "disposables",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "catchalls",
+                  "value": "<integer>"
+                },
+                {
+                  "disabled": false,
+                  "key": "unknowns",
+                  "value": "<integer>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "text/csv"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8ec9b02c-e202-4514-af44-71bef9cfd117",
+              "name": "CSV download",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "jobs",
+                    "download"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "key",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "job_id",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "valids",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "invalids",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "disposables",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "catchalls",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "unknowns",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "key",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "text/csv"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/csv"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.neverbounce.com/v4",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "query"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "1d19e83d-1fce-4661-8191-35af74a1f337",
+    "name": "NeverBounce API v4 Account Jobs API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "RESTful JSON API for email verification. Provides single email verification and bulk list (jobs) verification endpoints. Authentication uses a per-integration API key (format `secret_xxxx...`) supplied via the `key` query/body parameter or the `Authorization: Bearer` header.\n\nContact Support:\n Name: NeverBounce Developers",
+      "type": "text/plain"
+    }
+  }
+}

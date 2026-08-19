@@ -1,0 +1,175 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "NeverBounce API v4 Account Jobs API",
+    "version": "4"
+  },
+  "request": {
+    "auth": {
+      "type": "apikey",
+      "key": "key",
+      "value": "{{key}}",
+      "placement": "query"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Jobs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create a verification job",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.neverbounce.com/v4/jobs/create",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a bulk verification job from either a remote URL containing a CSV/list of emails or from inline supplied data."
+        },
+        {
+          "info": {
+            "name": "Parse a previously uploaded job",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.neverbounce.com/v4/jobs/parse",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Begins parsing of an uploaded list to prepare it for verification."
+        },
+        {
+          "info": {
+            "name": "Start verification of a parsed job",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.neverbounce.com/v4/jobs/start",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Start verification of a parsed job"
+        },
+        {
+          "info": {
+            "name": "Get job status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.neverbounce.com/v4/jobs/status",
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "job_id",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Get job status"
+        },
+        {
+          "info": {
+            "name": "Get paginated job results",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.neverbounce.com/v4/jobs/results",
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "job_id",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "items_per_page",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Get paginated job results"
+        },
+        {
+          "info": {
+            "name": "Download completed job results as CSV",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.neverbounce.com/v4/jobs/download",
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "job_id",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "valids",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "invalids",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "disposables",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "catchalls",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "unknowns",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Download completed job results as CSV"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

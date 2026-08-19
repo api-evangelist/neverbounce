@@ -1,0 +1,115 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://developers.neverbounce.com/docs/widget-getting-started,
+  https://developers.neverbounce.com/reference/widget-overview
+summary:
+  family_count: 1
+  component_count: 1
+  note: >-
+    NeverBounce ships one embeddable client-side surface: a drop-in JavaScript widget that
+    verifies email fields in a browser form. It exists specifically because the standard
+    API cannot be called from a browser — no CORS, and a `secret_` key would be exposed.
+families:
+- name: JavaScript Widget
+  type: embeddable-script
+  description: >-
+    A script tag that auto-detects email inputs on a page and verifies them in real time as
+    the user types, blocking invalid and disposable addresses from being submitted by
+    default.
+  docs: https://developers.neverbounce.com/docs/widget-getting-started
+  reference: https://developers.neverbounce.com/reference/widget-overview
+  create_app: https://app.neverbounce.com/apps/js-widget/new
+  components:
+  - name: NeverBounce.js
+    loader: true
+    registry: cdn
+    url: https://cdn.neverbounce.com/widget/dist/NeverBounce.js
+    version: null
+    published: null
+    note: >-
+      Unpinned CDN distribution — the documented script URL carries no version segment and
+      no integrity hash, so it floats to whatever NeverBounce has deployed. A consumer
+      cannot tell which build they are loading, and neither can this pipeline. There is no
+      npm/jsDelivr package backing it to query, so version is recorded null by
+      measurement, not by omission.
+  authentication:
+    key_prefix: public_
+    setting: _NBSettings.apiKey
+    note: >-
+      The widget only accepts `public_` keys; `secret_` API keys are rejected, and
+      `public_` keys cannot be used against the standard API. Abuse is controlled by
+      Authorized Domains/IPs and customer-configured throttling rules set in the dashboard
+      — with no authorized domains set, any origin may spend the account's credits.
+  configuration:
+    object: _NBSettings
+    style: global object declared before the script tag
+    documented_settings_include:
+    - apiKey
+    - acceptedMessage
+    - timeout
+    field_detection:
+    - input[type=email]
+    - input[name=email]
+    - '[data-nb]'
+  javascript_api:
+    global: window._nb
+    objects:
+    - name: _nb.api
+      methods:
+      - signature: getValidatePublic(email, successCallback, errorCallback)
+        description: Performs a verification directly; success callback receives a Result object.
+      - signature: sendEvent(event)
+        description: >-
+          Reports form telemetry back to NeverBounce. Supported events are `form.load` and
+          `form.completion`; abandonment is derived from the difference between them.
+      docs: https://developers.neverbounce.com/reference/widget-objects-api
+    - name: _nb.settings
+      description: >-
+        The live settings object created from `_NBSettings` at initialization. Modifying it
+        after initialization may break functionality.
+      docs: https://developers.neverbounce.com/reference/widget-object-settings
+    - name: _nb.result
+      docs: https://developers.neverbounce.com/reference/widget-objects-result
+    - name: _nb.fieldListener
+      docs: https://developers.neverbounce.com/reference/widget-objects-fieldlistener
+    - name: _nb.fieldsStore
+      docs: https://developers.neverbounce.com/reference/widget-objects-fieldsstore
+  events:
+    namespace: 'nb:'
+    payload: event.details
+    docs: https://developers.neverbounce.com/reference/widget-events
+    dom_hooks:
+    - nbClear
+    - nbLoading
+    - nbRegistered
+    - nbResult
+    - nbSoftResult
+    - nbSubmit
+    note: >-
+      The reference publishes a page per hook (nbclear, nbloading, nbregistered, nbresult,
+      nbsoft-result, nbsubmit); names above are transcribed from those page slugs.
+  error_states:
+    docs: https://developers.neverbounce.com/reference/widget-errors
+    states:
+    - name: Timeout
+      behaviour: >-
+        Expected occasionally with real-time verification; adjustable via the timeout
+        setting. Only a problem if frequent or concentrated on large mailbox providers.
+    - name: Insufficient Credits
+      behaviour: Account balance exhausted; buy credits or move to monthly billing.
+    - name: Bad Referrer
+      behaviour: Origin domain is not in the widget's Trusted Domains list.
+    - name: Throttling
+      behaviour: >-
+        Customer-configured limit hit. The widget returns `unknown` rather than blocking
+        the transaction, so the form still submits.
+  server_side_counterpart:
+    operation: widget-poe-confirm
+    path: /poe/confirm
+    description: >-
+      Proof of Engagement. The widget hands the server a `transaction_id`,
+      `confirmation_token`, `email` and `result`, which the server posts to /poe/confirm to
+      confirm the verification actually came from NeverBounce rather than a forged client
+      submission.
+    spec: openapi/neverbounce-poe-api-openapi.yml

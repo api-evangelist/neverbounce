@@ -1,0 +1,95 @@
+generated: '2026-08-13'
+method: searched
+source: >-
+  https://developers.neverbounce.com/reference/job-callbacks,
+  https://developers.neverbounce.com/reference/single-webhooks
+asyncapi_published: false
+asyncapi_note: >-
+  NeverBounce publishes no AsyncAPI document. Probed /asyncapi.yaml and /asyncapi.json on
+  api.neverbounce.com and developers.neverbounce.com (all four 404), and searched the
+  NeverBounce GitHub organization — its 11 repositories are SDK clients, the Ruby CLI, a
+  Laravel package, an n8n node and one unrelated Chart.js plugin. The event surface
+  below is transcribed from the provider's own reference pages; no AsyncAPI has been
+  synthesized on their behalf.
+summary:
+  outbound_webhooks: 1
+  event_count: 10
+  inbound_webhooks: 1
+  signature_verification: false
+outbound:
+- name: Job Callbacks
+  docs: https://developers.neverbounce.com/reference/job-callbacks
+  transport: HTTP
+  method: POST
+  content_type: application/json
+  subscription:
+    mechanism: per-job registration
+    parameters:
+    - name: callback_url
+      set_on: jobs-create
+      description: URL NeverBounce POSTs callbacks to for this job.
+    - name: callback_headers
+      set_on: jobs-create
+      description: >-
+        Array of request headers to send along with the callback. This is the only
+        authentication mechanism available — there is no signature, no shared secret and no
+        timestamp, so the receiver must authenticate the callback with a header it chose
+        itself.
+  payload:
+    shape:
+      job_id: integer
+      event: string
+    example: '{"job_id":4920062,"event":"job_deleted"}'
+    note: >-
+      The payload carries no result data. Every event is a signal to go call /jobs/status
+      or /jobs/results.
+  events:
+  - name: job_parsing_started
+    description: Job has begun its indexing phase.
+  - name: job_parsing_finished
+    description: >-
+      Job has completed indexing. If the creation request used `auto_start` it will start
+      momentarily; otherwise the job is now available to be started.
+  - name: job_sample_started
+    description: Job has begun its free analysis.
+  - name: job_sample_finished
+    description: Job has finished the free analysis; stats available via /jobs/status.
+  - name: job_run_started
+    description: Verification has begun; progress via /jobs/status.
+  - name: job_stats_updated
+    description: >-
+      Job stats updated and available via /jobs/status. NeverBounce warns this event is
+      sent frequently while a job runs — the one event a consumer must be prepared to
+      receive at high volume.
+  - name: job_review_completed
+    description: Job has been released from manual review.
+  - name: job_run_finished
+    description: >-
+      Verification complete; results downloadable via /jobs/download or /jobs/results.
+  - name: job_failed
+    description: >-
+      Job failed and cannot run. The reason code is in `failure_reason` on /jobs/status
+      (added in 4.2).
+  - name: job_deleted
+    description: Job is no longer available for verification or download.
+  delivery:
+    retries: undocumented
+    ordering: undocumented
+    replay: undocumented
+    note: >-
+      NeverBounce publishes no retry policy, delivery guarantee, ordering guarantee or
+      replay mechanism for callbacks. Polling /jobs/status remains supported and is the
+      documented fallback.
+inbound:
+- name: Single check webhook URL
+  docs: https://developers.neverbounce.com/reference/single-webhooks
+  description: >-
+    /single/check doubles as a URL-addressable webhook so CRMs and form tools can call
+    verification with no code. A webhook app is created at
+    https://app.neverbounce.com/apps/webhook/new and yields a URL with the key embedded.
+  url_template: >-
+    https://api.neverbounce.com/v4.2/single/check?key=webhook_secret_xxxxxxxx&email={email}
+  parameters_supported: [address_info, credits_info]
+  security_warning: >-
+    NeverBounce states these URLs are not safe in client-side scripts — the URL contains a
+    live key that must be treated as an API key.

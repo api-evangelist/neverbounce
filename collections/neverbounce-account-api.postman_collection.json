@@ -1,0 +1,133 @@
+{
+  "item": [
+    {
+      "id": "5973a2d8-8150-4ac5-a918-cc9822679c35",
+      "name": "Account",
+      "description": {
+        "content": "Account information",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "5ad1614c-c8de-4d0c-a190-dab6b0520d94",
+          "name": "Get account information and remaining credits",
+          "request": {
+            "name": "Get account information and remaining credits",
+            "description": {},
+            "url": {
+              "path": [
+                "account",
+                "info"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "key",
+                  "value": "<string>"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4e5ef160-cb2e-402a-987a-98d4924d1f79",
+              "name": "Account info",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "account",
+                    "info"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "key",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "key",
+                      "value": "<API Key>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"status\": \"string\",\n  \"credits_info\": {\n    \"paid_credits_used\": 2013,\n    \"free_credits_used\": 7590,\n    \"paid_credits_remaining\": 23,\n    \"free_credits_remaining\": 624\n  },\n  \"job_counts\": {\n    \"completed\": 2586,\n    \"under_review\": 8033,\n    \"queued\": 358,\n    \"processing\": 855\n  },\n  \"execution_time\": 1699\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.neverbounce.com/v4",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "key"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}"
+      },
+      {
+        "key": "in",
+        "value": "query"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "b8fd7470-a213-446d-9ff5-706529a2a19d",
+    "name": "NeverBounce API v4 Account API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "RESTful JSON API for email verification. Provides single email verification and bulk list (jobs) verification endpoints. Authentication uses a per-integration API key (format `secret_xxxx...`) supplied via the `key` query/body parameter or the `Authorization: Bearer` header.\n\nContact Support:\n Name: NeverBounce Developers",
+      "type": "text/plain"
+    }
+  }
+}
