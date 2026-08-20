@@ -90,6 +90,8 @@ apis:
   humanURL: https://developers.neverbounce.com/reference/jobs
   baseURL: https://api.neverbounce.com/v4
   tags:
+  - Job
+  tags_raw:
   - Jobs
   properties:
   - type: OpenAPI
