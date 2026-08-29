@@ -15,6 +15,18 @@ description: >-
   authentication failure and throttling — are returned with an HTTP 200 and a `status`
   field rather than a 4xx, which is the defining runtime quirk of this API.
 type: Index
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 accessModel:
   pricing: paid
   onboarding: self-serve
