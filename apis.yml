@@ -134,6 +134,9 @@ apis:
   baseURL: https://api.neverbounce.com/v4
   tags:
   - POE
+  - Widgets
+  tags_raw:
+  - POE
   - Widget
   properties:
   - type: OpenAPI
