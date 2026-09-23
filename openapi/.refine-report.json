@@ -1,18 +1,40 @@
 {
   "provider": "neverbounce",
   "sources": [
-    "neverbounce-account-api-openapi.yml",
-    "neverbounce-jobs-api-openapi.yml",
-    "neverbounce-single-api-openapi.yml"
+    "_original/neverbounce-api.json"
   ],
   "outputs": [
     "neverbounce-account-api-openapi.yml",
     "neverbounce-jobs-api-openapi.yml",
+    "neverbounce-poe-api-openapi.yml",
     "neverbounce-single-api-openapi.yml"
   ],
   "archived": [],
   "errors": [],
   "warnings": [],
-  "notes": [],
-  "skipped": []
+  "notes": [
+    "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "neverbounce-api.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
+    "neverbounce-api.json: tagged paths GET /account/info -> Account",
+    "neverbounce-api.json: tagged paths GET /single/check -> Single",
+    "neverbounce-api.json: tagged paths GET /jobs/search -> Jobs",
+    "neverbounce-api.json: tagged paths POST /jobs/create -> Jobs",
+    "neverbounce-api.json: tagged paths POST /jobs/parse -> Jobs",
+    "neverbounce-api.json: tagged paths POST /jobs/start -> Jobs",
+    "neverbounce-api.json: tagged paths GET /jobs/status -> Jobs",
+    "neverbounce-api.json: tagged paths GET /jobs/results -> Jobs",
+    "neverbounce-api.json: tagged paths POST /jobs/delete -> Jobs",
+    "neverbounce-api.json: tagged paths POST /poe/confirm -> Poe",
+    "neverbounce-api.json: declared missing tag: Account",
+    "neverbounce-api.json: declared missing tag: Jobs",
+    "neverbounce-api.json: declared missing tag: Poe",
+    "neverbounce-api.json: declared missing tag: Single",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "neverbounce-account-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "neverbounce-jobs-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "neverbounce-poe-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "neverbounce-single-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
 }

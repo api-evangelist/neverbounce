@@ -1,21 +1,13 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: NeverBounce Single API
+  title: neverbounce-api Single API
   version: '4.2'
-  description: Real-time verification of a single email address. Part of the NeverBounce v4 email verification
-    API. Harvested from the OpenAPI definition NeverBounce publishes behind its interactive API reference
-    at developers.neverbounce.com (ReadMe API Designer definition `neverbounce-api.json`).
-  contact:
-    name: NeverBounce Support
-    email: support@neverbounce.com
-    url: https://developers.neverbounce.com/
 servers:
 - url: https://api.neverbounce.com/v4.2
 security:
 - sec0: []
 tags:
 - name: Single
-  description: Real-time verification of a single email address
 paths:
   /single/check:
     get:
@@ -54,24 +46,11 @@ paths:
             application/json:
               examples:
                 Result:
-                  value: "{\n  \"status\": \"success\",\n  \"result\": \"valid\",\n  \"flags\": [\n  \
-                    \  \"has_dns\",\n    \"has_dns_mx\"\n  ],\n  \"suggested_correction\": \"\",\n  \"\
-                    execution_time\": 499\n}"
+                  value: "{\n  \"status\": \"success\",\n  \"result\": \"valid\",\n  \"flags\": [\n    \"has_dns\",\n    \"has_dns_mx\"\n  ],\n  \"suggested_correction\": \"\",\n  \"execution_time\": 499\n}"
                 Address Info:
-                  value: "{\n  \"status\": \"success\",\n  \"result\": \"valid\",\n  \"flags\": [\n  \
-                    \  \"has_dns\",\n    \"has_dns_mx\",\n    \"role_account\"\n  ],\n  \"suggested_correction\"\
-                    : \"\",\n  \"address_info\": {\n    \"original_email\": \"support@neverbounce.com\"\
-                    ,\n    \"normalized_email\": \"support@neverbounce.com\",\n    \"addr\": \"support\"\
-                    ,\n    \"alias\": \"\",\n    \"host\": \"neverbounce.com\",\n    \"fqdn\": \"neverbounce.com\"\
-                    ,\n    \"domain\": \"neverbounce\",\n    \"subdomain\": \"\",\n    \"tld\": \"com\"\
-                    \n  },\n  \"execution_time\": 399\n}"
+                  value: "{\n  \"status\": \"success\",\n  \"result\": \"valid\",\n  \"flags\": [\n    \"has_dns\",\n    \"has_dns_mx\",\n    \"role_account\"\n  ],\n  \"suggested_correction\": \"\",\n  \"address_info\": {\n    \"original_email\": \"support@neverbounce.com\",\n    \"normalized_email\": \"support@neverbounce.com\",\n    \"addr\": \"support\",\n    \"alias\": \"\",\n    \"host\": \"neverbounce.com\",\n    \"fqdn\": \"neverbounce.com\",\n    \"domain\": \"neverbounce\",\n    \"subdomain\": \"\",\n    \"tld\": \"com\"\n  },\n  \"execution_time\": 399\n}"
                 Credits Info:
-                  value: "{\n    \"status\": \"success\",\n    \"result\": \"valid\",\n    \"flags\":\
-                    \ [\n        \"smtp_connectable\",\n        \"has_dns\",\n        \"has_dns_mx\"\n\
-                    \    ],\n    \"suggested_correction\": \"\",\n    \"credits_info\": {\n        \"\
-                    paid_credits_used\": 1,\n        \"free_credits_used\": 0,\n        \"paid_credits_remaining\"\
-                    : 9950778,\n        \"free_credits_remaining\": 0\n    },\n    \"execution_time\"\
-                    : 350\n}"
+                  value: "{\n    \"status\": \"success\",\n    \"result\": \"valid\",\n    \"flags\": [\n        \"smtp_connectable\",\n        \"has_dns\",\n        \"has_dns_mx\"\n    ],\n    \"suggested_correction\": \"\",\n    \"credits_info\": {\n        \"paid_credits_used\": 1,\n        \"free_credits_used\": 0,\n        \"paid_credits_remaining\": 9950778,\n        \"free_credits_remaining\": 0\n    },\n    \"execution_time\": 350\n}"
               schema:
                 oneOf:
                 - type: object
@@ -189,48 +168,25 @@ paths:
       x-readme:
         code-samples:
         - language: curl
-          code: "# Be sure to encode email before making the request (@ becomes %40)\ncurl --request GET\\\
-            \n  --url 'https://api.neverbounce.com/v4.2/single/check?key={api_key}&email={email}'"
+          code: "# Be sure to encode email before making the request (@ becomes %40)\ncurl --request GET\\\n  --url 'https://api.neverbounce.com/v4.2/single/check?key={api_key}&email={email}'"
         - language: php
-          code: "<?php\n\n// Set API key\n\\NeverBounce\\Auth::setApiKey($api_key);\n\n// Make verification\
-            \ request, specify optional $max_execution_time\n$result = \\NeverBounce\\Single::check(\n\
-            \  'support@neverbounce.com', // Email to verify\n  true, // Address info\n  true, // Credits\
-            \ info\n  10 // Timeout in seconds\n);"
+          code: "<?php\n\n// Set API key\n\\NeverBounce\\Auth::setApiKey($api_key);\n\n// Make verification request, specify optional $max_execution_time\n$result = \\NeverBounce\\Single::check(\n  'support@neverbounce.com', // Email to verify\n  true, // Address info\n  true, // Credits info\n  10 // Timeout in seconds\n);"
         - language: javascript
-          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\n\
-            \n/// Verify an email\nclient.single.check(\n  'support@neverbounce.com', \n  true, // Address\
-            \ info\n  true // Credits info\n  10 // timeout\n).then(\n    result => // Handle success\
-            \ response\n    err => // Handle error response\n);"
+          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\n\n/// Verify an email\nclient.single.check(\n  'support@neverbounce.com', \n  true, // Address info\n  true // Credits info\n  10 // timeout\n).then(\n    result => // Handle success response\n    err => // Handle error response\n);"
           name: NodeJs
         - language: python
-          code: "import neverbounce_sdk\n\n# Create sdk client\nclient = neverbounce_sdk.client(api_key='api_key')\n\
-            \n# Verify email\nverification = client.single_check(\n  email='support@neverbounce.com',\n\
-            \  address_info=True,\n  credits_info=True,\n  timeout=10  # Timeout in seconds\n)"
+          code: "import neverbounce_sdk\n\n# Create sdk client\nclient = neverbounce_sdk.client(api_key='api_key')\n\n# Verify email\nverification = client.single_check(\n  email='support@neverbounce.com',\n  address_info=True,\n  credits_info=True,\n  timeout=10  # Timeout in seconds\n)"
         - language: go
-          code: "// Instantiate wrapper\nclient := neverbounce.New(\"api_key\")\n\n// Verify an email\n\
-            singleResults, err := client.Single.Check(&nbModels.SingleCheckRequestModel{\n  Email:   \
-            \    \"support@neverbounce.com\",\n  AddressInfo: true,\n  CreditInfo:  true,\n  Timeout:\
-            \     10,\n})"
+          code: "// Instantiate wrapper\nclient := neverbounce.New(\"api_key\")\n\n// Verify an email\nsingleResults, err := client.Single.Check(&nbModels.SingleCheckRequestModel{\n  Email:       \"support@neverbounce.com\",\n  AddressInfo: true,\n  CreditInfo:  true,\n  Timeout:     10,\n})"
         - language: ruby
-          code: "# Instantiate API client\nclient = NeverBounce::API::Client.new(api_key: \"api_key\"\
-            )\n\n# Get account info\nresp = client.single_check(\n  email: \"support@neverbounce.com\"\
-            , \n  address_info: true, \n  credits_info: true, \n  timeout: 10)"
+          code: "# Instantiate API client\nclient = NeverBounce::API::Client.new(api_key: \"api_key\")\n\n# Get account info\nresp = client.single_check(\n  email: \"support@neverbounce.com\", \n  address_info: true, \n  credits_info: true, \n  timeout: 10)"
         - language: csharp
-          code: "// Create SDK object\nvar sdk = new NeverBounceSdk(\"api_key\");\n\n// Create request\
-            \ model\nvar model = new SingleRequestModel();\nmodel.email = \"support@neverbounce.com\"\
-            ;\nmodel.credits_info = true;\nmodel.address_info = true;\nmodel.timeout = 10; \n\n// Verify\
-            \ single email\nSingleResponseModel resp = await sdk.Single.Check(model);"
+          code: "// Create SDK object\nvar sdk = new NeverBounceSdk(\"api_key\");\n\n// Create request model\nvar model = new SingleRequestModel();\nmodel.email = \"support@neverbounce.com\";\nmodel.credits_info = true;\nmodel.address_info = true;\nmodel.timeout = 10; \n\n// Verify single email\nSingleResponseModel resp = await sdk.Single.Check(model);"
           name: .NET
         - language: java
-          code: "// Instantiate Client\nNeverbounceClient neverbounceClient = NeverbounceClientFactory.create(apiKey);\n\
-            \n// Perform verification\nSingleCheckResponse singleCheckResponse = neverbounceClient\n \
-            \           .prepareSingleCheckRequest()\n            .withEmail(\"support@neverbounce.com\"\
-            )\n            .withAddressInfo(true)\n            .withCreditsInfo(true)\n            .withTimeout(10)\n\
-            \            .build()\n            .execute()"
+          code: "// Instantiate Client\nNeverbounceClient neverbounceClient = NeverbounceClientFactory.create(apiKey);\n\n// Perform verification\nSingleCheckResponse singleCheckResponse = neverbounceClient\n            .prepareSingleCheckRequest()\n            .withEmail(\"support@neverbounce.com\")\n            .withAddressInfo(true)\n            .withCreditsInfo(true)\n            .withTimeout(10)\n            .build()\n            .execute()"
         - language: node
-          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\n\
-            try {\n  const result = await client.single.check('support@neverbounce.com');\n  console.log('Result:',\
-            \ result);\n} catch (error) {\n  console.error('Error:', error);\n}"
+          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\ntry {\n  const result = await client.single.check('support@neverbounce.com');\n  console.log('Result:', result);\n} catch (error) {\n  console.error('Error:', error);\n}"
         samples-languages:
         - curl
         - php
@@ -249,3 +205,8 @@ components:
       type: apiKey
       in: query
       name: key
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+x-readme-fauxas: true

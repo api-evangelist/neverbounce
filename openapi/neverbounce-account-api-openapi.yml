@@ -1,21 +1,13 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: NeverBounce Account API
+  title: neverbounce-api Account API
   version: '4.2'
-  description: Account information and remaining credits. Part of the NeverBounce v4 email verification
-    API. Harvested from the OpenAPI definition NeverBounce publishes behind its interactive API reference
-    at developers.neverbounce.com (ReadMe API Designer definition `neverbounce-api.json`).
-  contact:
-    name: NeverBounce Support
-    email: support@neverbounce.com
-    url: https://developers.neverbounce.com/
 servers:
 - url: https://api.neverbounce.com/v4.2
 security:
 - sec0: []
 tags:
 - name: Account
-  description: Account information and remaining credits
 paths:
   /account/info:
     get:
@@ -29,11 +21,7 @@ paths:
             application/json:
               examples:
                 Result:
-                  value: "{\n    \"status\": \"success\",\n    \"credits_info\": {\n        \"paid_credits_used\"\
-                    : 0,\n        \"free_credits_used\": 0,\n        \"paid_credits_remaining\": 9950791,\n\
-                    \        \"free_credits_remaining\": 0\n    },\n    \"job_counts\": {\n        \"\
-                    completed\": 409,\n        \"under_review\": 0,\n        \"queued\": 0,\n        \"\
-                    processing\": 0\n    },\n    \"execution_time\": 896\n}"
+                  value: "{\n    \"status\": \"success\",\n    \"credits_info\": {\n        \"paid_credits_used\": 0,\n        \"free_credits_used\": 0,\n        \"paid_credits_remaining\": 9950791,\n        \"free_credits_remaining\": 0\n    },\n    \"job_counts\": {\n        \"completed\": 409,\n        \"under_review\": 0,\n        \"queued\": 0,\n        \"processing\": 0\n    },\n    \"execution_time\": 896\n}"
               schema:
                 type: object
                 properties:
@@ -110,9 +98,7 @@ paths:
 
             $info = \NeverBounce\Account::info();'
         - language: javascript
-          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\n\
-            \n// Get account info\nclient.account.info().then(\n    resp => // Handle successful response\n\
-            \    err => // Handle error response\n);"
+          code: "// Initialize NeverBounce client\nconst client = new NeverBounce({apiKey: myApiKey});\n\n// Get account info\nclient.account.info().then(\n    resp => // Handle successful response\n    err => // Handle error response\n);"
           name: NodeJS
         - language: python
           code: 'import neverbounce_sdk
@@ -180,3 +166,8 @@ components:
       type: apiKey
       in: query
       name: key
+x-readme:
+  headers: []
+  explorer-enabled: true
+  proxy-enabled: true
+x-readme-fauxas: true
