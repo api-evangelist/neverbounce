@@ -44,6 +44,15 @@ accessModel:
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/neverbounce.png
 tags:
   - Email Verification
+  - Email Hygiene
+  - Deliverability
+  - Marketing
+  - List Cleaning
+  - Data Quality
+  - ZoomInfo
+  - Email
+tags_raw:
+  - Email Verification
   - Email Validation
   - Email Hygiene
   - Deliverability
@@ -51,6 +60,7 @@ tags:
   - List Cleaning
   - Data Quality
   - ZoomInfo
+  - Email
 url: >-
   https://raw.githubusercontent.com/api-evangelist/neverbounce/refs/heads/main/apis.yml
 created: '2026-05-11'
