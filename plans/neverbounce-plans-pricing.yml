@@ -169,3 +169,148 @@ api_relevant_notes:
 - >-
   The free list analysis runs as a job sample (`job_sample_started` /
   `job_sample_finished` callbacks) before credits are spent on a full run.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - hybrid
+  units:
+  - message
+  - transaction
+  plans:
+  - name: Basic — 1,000 credits
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - transaction
+    periods:
+    - one-time
+  - name: Basic — 5,000 credits
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - transaction
+    periods:
+    - one-time
+  - name: Basic — 10,000 credits
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - transaction
+    periods:
+    - one-time
+  - name: Basic — 25,000 credits
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - transaction
+    periods:
+    - one-time
+  - name: Basic — 50,000 credits
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - transaction
+    periods:
+    - one-time
+  - name: Basic — 100,000 credits
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - transaction
+    periods:
+    - one-time
+  - name: Basic — 250,000 credits
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - transaction
+    periods:
+    - one-time
+  - name: Basic — 500,000 credits
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - transaction
+    periods:
+    - one-time
+  - name: Basic — 1,000,000 credits
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - transaction
+    periods:
+    - one-time
+  - name: Basic — 2,000,000 credits
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - transaction
+    periods:
+    - one-time
+  - name: Sync — 1,000 emails
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - message
+    periods:
+    - month
+  - name: Sync — 10,000 emails
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - message
+    periods:
+    - month
+  - name: Sync — 50,000 emails
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - message
+    periods:
+    - month
+  - name: Sync — 100,000 emails
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - message
+    periods:
+    - month
+  - name: Sync — 250,000 emails
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - message
+    periods:
+    - month
+  - name: Sync — 500,000 emails
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - message
+    periods:
+    - month
+  - name: Sync — 1,000,000 emails
+    access: other
+    model: hybrid
+    model_how: derived
+    units:
+    - message
+    periods:
+    - month
