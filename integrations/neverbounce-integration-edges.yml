@@ -51,9 +51,175 @@ edges:
     builder: Pipedream repo (component)
   detected_by: sweep-workflow-automation.py
   first_seen: '2026-10-15'
+- partner_name: Go module proxy
+  partner: null
+  partner_match: null
+  type: register
+  direction: provider-built
+  category: official SDK (Go)
+  evidence: https://pkg.go.dev/github.com/NeverBounce/NeverBounceApi-Go
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: Go module proxy (public registry JSON)
+    spec_file: null
+    language: Go
+    packages:
+    - name: github.com/NeverBounce/NeverBounceApi-Go
+      version: v0.0.0-20210719183823-e6b7873134ae
+      released: '2021-07-19'
+      released_field: Time
+      lapsed: true
+      page: https://pkg.go.dev/github.com/NeverBounce/NeverBounceApi-Go
+      repo_leg: github-org:neverbounce
+      publisher_leg: org:neverbounce
+      matched_by: github-org
+    current: false
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: Maven Central
+  partner: maven-central
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Java/JVM)
+  evidence: https://central.sonatype.com/artifact/com.neverbounce/neverbounce-api-java
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: Maven Central (public registry JSON)
+    spec_file: null
+    language: Java/JVM
+    packages:
+    - name: com.neverbounce:neverbounce-api-java
+      version: 4.0.15
+      released: '2020-11-11'
+      released_field: lastUpdated
+      lapsed: true
+      page: https://central.sonatype.com/artifact/com.neverbounce/neverbounce-api-java
+      repo_leg: github-org:neverbounce
+      publisher_leg: groupId:neverbounce.com
+      matched_by: domain
+    current: false
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: npm registry
+  partner: npm
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (JavaScript/TypeScript)
+  evidence: https://www.npmjs.com/package/neverbounce
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: neverbounce
+      version: 5.0.5
+      released: '2026-02-16'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/neverbounce
+      repo_leg: domain:neverbounce.com
+      publisher_leg: email:neverbounce.com
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: PyPI
+  partner: pypi
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Python)
+  evidence: https://pypi.org/project/neverbounce-sdk/
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: PyPI (public registry JSON)
+    spec_file: null
+    language: Python
+    packages:
+    - name: neverbounce-sdk
+      version: 4.3.0
+      released: '2020-08-05'
+      released_field: upload_time
+      lapsed: true
+      page: https://pypi.org/project/neverbounce-sdk/
+      repo_leg: github-org:neverbounce
+      publisher_leg: email:neverbounce.com
+      matched_by: domain
+    current: false
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: RubyGems
+  partner: rubygems
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Ruby)
+  evidence: https://rubygems.org/gems/neverbounce-api
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: RubyGems (public registry JSON)
+    spec_file: null
+    language: Ruby
+    packages:
+    - name: neverbounce-api
+      version: 1.2.1
+      released: '2025-11-13'
+      released_field: version_created_at
+      lapsed: false
+      page: https://rubygems.org/gems/neverbounce-api
+      repo_leg: domain:neverbounce.com
+      publisher_leg: org:neverbounce
+      matched_by: domain
+    - name: neverbounce-cli
+      version: 1.1.0
+      released: '2020-02-21'
+      released_field: version_created_at
+      lapsed: true
+      page: https://rubygems.org/gems/neverbounce-cli
+      repo_leg: domain:neverbounce.com
+      publisher_leg: org:neverbounce
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
 method: searched
 checked:
+- https://api.nuget.org/v3
+- https://crates.io/api/v1
 - https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/
+- https://proxy.golang.org
+- https://pypi.org/pypi
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
 - https://zapier.com/api/v4/apps/
 source:
 - https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/
