@@ -217,3 +217,16 @@
     builder: Pipedream repo (component)
   status: not-a-workflow
   arazzo: null
+- slug: neverbounce-hubspot-own
+  label: HubSpot (own)
+  partner: hubspot
+  partner_name: HubSpot (own)
+  category: EMAIL
+  type: marketplace
+  marketplace: own
+  channel: partner-built
+  evidence: https://ecosystem.hubspot.com/marketplace/listing/neverbounce
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
