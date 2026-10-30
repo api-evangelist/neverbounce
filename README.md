@@ -1,4 +1,4 @@
-# NeverBounce (neverbounce)
+# NeverBounce
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,65 +64,148 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-NeverBounce is an email verification and list cleaning service (now part of ZeroBounce) that validates individual email addresses in real time and cleans bulk lists by checking syntax, mailbox existence, role addresses, disposable addresses, catch-all domains, and deliverability to reduce bounce rates for marketing, sales, and transactional senders. The NeverBounce v4 REST API at https://api.neverbounce.com/v4/ provides endpoints for single email checks, list jobs (create, parse, start, status, results, download), account info, and webhooks, with JSON responses over HTTPS. Authentication uses a per-integration API key (format `secret_xxxx...`) passed as the `key` parameter or in the Authorization header.
+NeverBounce is an email verification and list cleaning service — a ZoomInfo company — that validates individual email addresses in real time and cleans bulk lists by checking syntax, mailbox existence, role addresses, disposable addresses, catch-all domains, and deliverability to reduce bounce rates for marketing, sales, and transactional senders. The NeverBounce v4 REST API at https://api.neverbounce.com/v4.2/ provides ten published operations covering single email checks (/single/check), bulk list jobs (create, parse, start, status, results, search, delete, download), account credit info, and the Proof-of-Engagement confirmation used by the browser widget, with JSON responses over HTTPS. Authentication uses a per-integration API key (format `secret_xxxx...`) passed as the `key` parameter in the query string or request body; `public_` keys drive the JavaScript widget and cannot call the standard API. Application errors — including authentication failure and throttling — are returned with an HTTP 200 and a `status` field rather than a 4xx, which is the defining runtime quirk of this API.
 
-**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/neverbounce/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/neverbounce/refs/heads/main/apis.yml)
+**Areas:** Email Verification · Email Hygiene · Deliverability · Marketing · List Cleaning · Data Quality · ZoomInfo · Email
 
-## Scope
+## NeverBounce on APIs.io
 
-- **Type:** Index
+Everything profiled for NeverBounce is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/neverbounce/](https://apis.io/providers/neverbounce/)** — or go straight to one of the APIs or properties below.
 
-## Tags
+### APIs (5)
 
-- Email Verification
-- Email Validation
-- Email Hygiene
-- Deliverability
-- Marketing
-- List Cleaning
-- ZeroBounce
+- [NeverBounce API v4](https://apis.io/apis/neverbounce/v4-api/) — RESTful JSON API for email verification. Provides single email verification (`/single/check`), bulk job verification (`/jobs/create`, `/jobs/parse`,…
+- [NeverBounce Account API](https://apis.io/apis/neverbounce/neverbounce-account-api/) — Account credit balances and job counts by state.
+- [NeverBounce Jobs API](https://apis.io/apis/neverbounce/neverbounce-jobs-api/) — Bulk list verification jobs — create, parse, start, status, results, search, delete, download.
+- [NeverBounce Single API](https://apis.io/apis/neverbounce/neverbounce-single-api/) — Real-time verification of a single email address.
+- [NeverBounce POE API](https://apis.io/apis/neverbounce/neverbounce-poe-api/) — Proof of Engagement. Server-side confirmation that a verification produced by the browser JavaScript widget genuinely came from NeverBounce, using the…
 
-## Timestamps
+### Published properties
 
-- **Created:** 2026-05-11
-- **Modified:** 2026-05-11
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## APIs
+#### AsyncAPI (1)
 
-### NeverBounce API v4
+Event-driven and webhook contracts.
 
-RESTful JSON API for email verification. Provides single email verification (`/single/check`), bulk job verification (`/jobs/create`, `/jobs/parse`, `/jobs/start`, `/jobs/status`, `/jobs/results`, `/jobs/download`), account info, and POE (Proof of Engagement) endpoints. Authentication uses a per-integration API key (`secret_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`) passed via the `key` query/body parameter or `Authorization: Bearer` header.
+- [Neverbounce Webhooks](https://apis.io/asyncapis/neverbounce/neverbounce-webhooks/)
 
-- **Human URL:** [https://developers.neverbounce.com/docs/api-getting-started](https://developers.neverbounce.com/docs/api-getting-started)
-- **Base URL:** `https://api.neverbounce.com/v4`
+#### MCP servers (1)
 
-#### Tags
+Model Context Protocol servers that expose the API to agents.
 
-- Email Verification
-- REST
-- JSON
-- Deliverability
+- [NeverBounce Developer Docs MCP](https://apis.io/servers/neverbounce/neverbounce-developer-docs-mcp/)
 
-#### Properties
+#### Agentic access (1)
 
-- [Documentation](https://developers.neverbounce.com/docs/api-getting-started)
-- [Verifying an  Email](https://developers.neverbounce.com/docs/verifying-an-email)
-- [Verifying a  List](https://developers.neverbounce.com/docs/verifying-a-list)
-- [Git Hub  S D Ks](https://github.com/NeverBounce)
-- [Postman Collection](collections/neverbounce.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
-- [Open Collection](collections/neverbounce.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+Which operations an agent can call, which act, and which need a human in the loop.
 
-## Common Properties
+- [Neverbounce Agentic Access](https://apis.io/agentic-access/neverbounce/neverbounce-agentic-access/)
 
-- [LinkedIn](https://www.linkedin.com/company/neverbounce)
+#### Collections (4)
+
+Postman and Open Collection request collections.
+
+- [NeverBounce API v4](https://apis.io/collections/neverbounce/open-neverbounce/)
+- [NeverBounce API v4 Account API](https://apis.io/collections/neverbounce/open-neverbounce-account-api/)
+- [NeverBounce API v4 Account Jobs API](https://apis.io/collections/neverbounce/open-neverbounce-jobs-api/)
+- [NeverBounce API v4 Account Single API](https://apis.io/collections/neverbounce/open-neverbounce-single-api/)
+
+#### Overlays (4)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Neverbounce Account Overlay](https://apis.io/overlays/neverbounce/neverbounce-account-overlay/)
+- [Neverbounce Jobs Overlay](https://apis.io/overlays/neverbounce/neverbounce-jobs-overlay/)
+- [Neverbounce Poe Overlay](https://apis.io/overlays/neverbounce/neverbounce-poe-overlay/)
+- [Neverbounce Single Overlay](https://apis.io/overlays/neverbounce/neverbounce-single-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Neverbounce Authentication](https://apis.io/security/neverbounce/neverbounce-authentication/)
+- [Neverbounce Domain Security](https://apis.io/security/neverbounce/neverbounce-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Neverbounce Plans Pricing](https://apis.io/plans/neverbounce/neverbounce-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Neverbounce Rate Limits](https://apis.io/rate-limits/neverbounce/neverbounce-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
 - [Website](https://www.neverbounce.com)
 - [Documentation](https://developers.neverbounce.com/)
-- [GitHub Organization](https://github.com/NeverBounce)
+- [Getting started](https://developers.neverbounce.com/docs/api-getting-started)
+- [API reference](https://developers.neverbounce.com/reference/getting-started)
 - [Pricing](https://www.neverbounce.com/pricing)
-- [Sign Up](https://app.neverbounce.com/register)
-- [L L Ms Txt](https://developers.neverbounce.com/llms.txt)
+- [Support](https://www.neverbounce.com/contact)
+- [Blog](https://www.neverbounce.com/blog)
+- [Terms of service](https://www.neverbounce.com/terms-of-use)
+- [Privacy policy](https://www.zoominfo.com/legal/privacy-policy)
+- [GitHub](https://github.com/NeverBounce)
+- [Status](https://status.neverbounce.com)
 
-## Maintainers
+## API Evangelist rating
 
-**FN:** Kin Lane
-**Email:** kin@apievangelist.com
+**Kin Score 58.7** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 52.8 |
+| Contract governance | 4.5 |
+| Operational transparency | 81.6 |
+| Developer ergonomics | 54.2 |
+| Access clarity | 76.3 |
+
+**Agent readiness 44.7** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | verified |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | paginated |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 24.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/neverbounce/](https://apis.io/providers/neverbounce/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for NeverBounce: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/neverbounce/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
